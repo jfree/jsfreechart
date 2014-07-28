@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Histogram drawn to a 2D context</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="src/JSFreeChart.js"></script>
+        <script type="text/javascript" src="src/Charts.js"></script>
+        <script type="text/javascript" src="src/ChartManager.js"></script>
+        <script type="text/javascript" src="src/Args.js"></script>
+        <script type="text/javascript" src="src/Utils.js"></script>
+        <script type="text/javascript" src="src/axis/AxisSpace.js"></script>
+        <script type="text/javascript" src="src/axis/BaseValueAxis.js"></script>
+        <script type="text/javascript" src="src/axis/LabelOrientation.js"></script>
+        <script type="text/javascript" src="src/axis/NumberTickSelector.js"></script>
+        <script type="text/javascript" src="src/axis/TickMark.js"></script>
+        <script type="text/javascript" src="src/data/DatasetUtils.js"></script>
+        <script type="text/javascript" src="src/data/Map.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues2DDataset.js"></script>
+        <script type="text/javascript" src="src/data/Bin.js"></script>
+        <script type="text/javascript" src="src/data/HistogramDataset.js"></script>
+        <script type="text/javascript" src="src/data/XYDatasetUtils.js"></script>
+        <script type="text/javascript" src="src/graphics/Anchor2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Color.js"></script>
+        <script type="text/javascript" src="src/Colors.js"></script>
+        <script type="text/javascript" src="src/graphics/Dimension.js"></script>
+        <script type="text/javascript" src="src/graphics/Fit2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Font.js"></script>
+        <script type="text/javascript" src="src/graphics/HAlign.js"></script>
+        <script type="text/javascript" src="src/graphics/Insets.js"></script>
+        <script type="text/javascript" src="src/graphics/LineCap.js"></script>
+        <script type="text/javascript" src="src/graphics/LineJoin.js"></script>
+        <script type="text/javascript" src="src/graphics/Offset2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Point2D.js"></script>
+        <script type="text/javascript" src="src/graphics/RefPt2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Shape.js"></script>
+        <script type="text/javascript" src="src/graphics/Stroke.js"></script>
+        <script type="text/javascript" src="src/graphics/Rectangle.js"></script>
+        <script type="text/javascript" src="src/graphics/RectangleEdge.js"></script>
+        <script type="text/javascript" src="src/graphics/Scale2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGLayer.js"></script>
+        <script type="text/javascript" src="src/graphics/BaseContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/TextAnchor.js"></script>
+        <script type="text/javascript" src="src/graphics/Transform.js"></script>
+        <script type="text/javascript" src="src/interaction/Modifier.js"></script>
+        <script type="text/javascript" src="src/interaction/BaseMouseHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
+        <script type="text/javascript" src="src/legend/LegendBuilder.js"></script>
+        <script type="text/javascript" src="src/legend/LegendItemInfo.js"></script>
+        <script type="text/javascript" src="src/legend/StandardLegendBuilder.js"></script>
+        <script type="text/javascript" src="src/axis/LinearAxis.js"></script>
+        <script type="text/javascript" src="src/data/Range.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues3DDataset.js"></script>
+        <script type="text/javascript" src="src/data/XYDataset.js"></script>
+        <script type="text/javascript" src="src/labels/StandardXYLabelGenerator.js"></script>
+        <script type="text/javascript" src="src/plot/XYPlot.js"></script>
+        <script type="text/javascript" src="src/renderer/ColorSource.js"></script>
+        <script type="text/javascript" src="src/renderer/BaseXYRenderer.js"></script>
+        <script type="text/javascript" src="src/renderer/ScatterRenderer.js"></script>
+        <script type="text/javascript" src="src/renderer/XYBarRenderer.js"></script>
+        <script type="text/javascript" src="src/table/BaseElement.js"></script>
+        <script type="text/javascript" src="src/table/FlowElement.js"></script>
+        <script type="text/javascript" src="src/table/GridElement.js"></script>
+        <script type="text/javascript" src="src/table/RectangleElement.js"></script>
+        <script type="text/javascript" src="src/table/StandardRectanglePainter.js"></script>
+        <script type="text/javascript" src="src/table/TextElement.js"></script>
+        <script type="text/javascript" src="src/util/NumberFormat.js"></script>
+        <script type="text/javascript" src="src/Chart.js"></script>
+        
+        <style>       
+            .chart_container { background-color:yellow; height: 100%; width: 100%; }
+            body { margin: 0; border: 2px; padding: 5px; }
+            .row, .col { overflow: hidden; position: absolute; }
+            .row { left: 0; right: 0; }
+            .col { top: 0; bottom: 0; }
+            .scroll-x { overflow-x: none; }
+            .scroll-y { overflow-y: none; }
+
+            .header.row { height: 105px; top: 0; background-color:yellow}
+            .body.row { background-color:red; top: 105px; bottom: 50px;}
+            .footer.row { height: 50px; bottom: 0; background-color:yellow}
+        </style>
+    </head>
+    <body onload="installChart();">
+        <script type="application/javascript">
+            function installChart() {
+                var dataset = new jsfc.HistogramDataset("Test Data");
+                dataset.addBin(0.0, 1.0);
+                dataset.addBin(1.0, 2.0);
+                dataset.addBin(2.0, 3.0);
+                dataset.addBin(3.0, 4.0);
+                dataset.addBin(4.0, 5.0);
+                dataset.addAll([1.2, 1.5, 4.3, 2.1, 2.2, 1.0, 3.3, 3.7, 4.1, 4.4]);
+                
+                var chart = jsfc.Charts.createXYBarChart("Histogram Chart in SVG", "Needs lots of work", dataset);
+                chart.setSize(600, 400);
+                var svg = document.getElementById("chart_svg");
+                document.chartManager = new jsfc.ChartManager(svg, chart);
+                document.chartManager.refreshDisplay();                
+                var win = document.defaultView || document.parentWindow;
+                win.onresize = resize;
+            };
+            function resize(evt) {
+                var element = document.getElementById("scatter_chart_1");
+                var w = Math.max(300, element.clientWidth);
+                var h = Math.max(200, element.clientHeight);
+                document.chartManager.getChart().setSize(w, h);
+                document.chartManager.refreshDisplay();
+            }
+            
+        </script>   
+        <div class="header row">
+            <h4>Resizing Chart Demo:</h4>
+            <p>In this demo we have a chart that resizes according to the resizing
+                of its container.</p>
+        </div>
+        <div class="body row scroll-x scroll-y">
+            <div id="scatter_chart_1" class="chart_container">
+<!--        <canvas id="chart_canvas" width="600" height="400"></canvas>-->
+                <svg id="chart_svg"></svg>                
+            </div>
+        </div>
+        <div class="footer row">
+            <p id="debug">This is a footer, part of the HTML not the chart.</p>
+            
+        </div>
+    </body>
+</html>

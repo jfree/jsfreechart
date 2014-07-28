@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Demo Scatter Plots</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <script type="text/javascript" src="src/JSFreeChart.js"></script>
+        <script type="text/javascript" src="src/Charts.js"></script>
+        <script type="text/javascript" src="src/ChartManager.js"></script>
+        <script type="text/javascript" src="src/Args.js"></script>
+        <script type="text/javascript" src="src/Utils.js"></script>
+        <script type="text/javascript" src="src/util/NumberFormat.js"></script>
+        <script type="text/javascript" src="src/axis/AxisSpace.js"></script>
+        <script type="text/javascript" src="src/axis/BaseValueAxis.js"></script>
+        <script type="text/javascript" src="src/axis/LabelOrientation.js"></script>
+        <script type="text/javascript" src="src/axis/NumberTickSelector.js"></script>
+        <script type="text/javascript" src="src/axis/TickMark.js"></script>
+        <script type="text/javascript" src="src/data/DatasetUtils.js"></script>
+        <script type="text/javascript" src="src/data/Map.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues2DDataset.js"></script>
+        <script type="text/javascript" src="src/data/Range.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues3DDataset.js"></script>
+        <script type="text/javascript" src="src/data/StandardXYDataset.js"></script>
+        <script type="text/javascript" src="src/data/XYDatasetUtils.js"></script>
+        <script type="text/javascript" src="src/graphics/Anchor2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Color.js"></script>
+        <script type="text/javascript" src="src/Colors.js"></script>
+        <script type="text/javascript" src="src/graphics/Dimension.js"></script>
+        <script type="text/javascript" src="src/graphics/Fit2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Font.js"></script>
+        <script type="text/javascript" src="src/graphics/HAlign.js"></script>
+        <script type="text/javascript" src="src/graphics/Insets.js"></script>
+        <script type="text/javascript" src="src/graphics/LineCap.js"></script>
+        <script type="text/javascript" src="src/graphics/LineJoin.js"></script>
+        <script type="text/javascript" src="src/graphics/Offset2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Point2D.js"></script>
+        <script type="text/javascript" src="src/graphics/RefPt2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Shape.js"></script>
+        <script type="text/javascript" src="src/graphics/Stroke.js"></script>
+        <script type="text/javascript" src="src/graphics/Rectangle.js"></script>
+        <script type="text/javascript" src="src/graphics/RectangleEdge.js"></script>
+        <script type="text/javascript" src="src/graphics/Scale2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGLayer.js"></script>
+        <script type="text/javascript" src="src/graphics/BaseContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/TextAnchor.js"></script>
+        <script type="text/javascript" src="src/graphics/Transform.js"></script>
+        <script type="text/javascript" src="src/interaction/Modifier.js"></script>
+        <script type="text/javascript" src="src/interaction/BaseMouseHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
+        <script type="text/javascript" src="src/legend/LegendBuilder.js"></script>
+        <script type="text/javascript" src="src/legend/LegendItemInfo.js"></script>
+        <script type="text/javascript" src="src/legend/StandardLegendBuilder.js"></script>
+        <script type="text/javascript" src="src/legend/FixedLegendBuilder.js"></script>
+        <script type="text/javascript" src="src/axis/LinearAxis.js"></script>
+        <script type="text/javascript" src="src/axis/LogAxis.js"></script>
+        <script type="text/javascript" src="src/labels/StandardXYLabelGenerator.js"></script>
+        <script type="text/javascript" src="src/plot/XYPlot.js"></script>
+        <script type="text/javascript" src="src/renderer/ColorSource.js"></script>
+        <script type="text/javascript" src="src/renderer/BaseXYRenderer.js"></script>
+        <script type="text/javascript" src="src/renderer/ScatterRenderer.js"></script>
+        <script type="text/javascript" src="src/table/BaseElement.js"></script>
+        <script type="text/javascript" src="src/table/FlowElement.js"></script>
+        <script type="text/javascript" src="src/table/GridElement.js"></script>
+        <script type="text/javascript" src="src/table/RectangleElement.js"></script>
+        <script type="text/javascript" src="src/table/StandardRectanglePainter.js"></script>
+        <script type="text/javascript" src="src/table/TextElement.js"></script>
+        <script type="text/javascript" src="src/Chart.js"></script>
+
+    </head>
+    <body onload="installCharts()">
+        <style>       
+            table { font: 10px sans-serif; }
+        </style>
+        <script type="application/javascript">
+            var allData;
+            var datasets = [];
+            var charts = [];
+            var managers = [];
+            // function to install 4 charts on the page for the demo
+            function installCharts() {
+                var request = new XMLHttpRequest();
+                request.open('GET', 'iris.json', false);  // `false` makes the request synchronous
+                request.send(null);
+                // 200 is what we expect, Chrome seems to come back with 0
+                if (request.status === 200 || request.status === 0) {
+                    allData = new jsfc.KeyedValues3DDataset();
+                    allData.parse(request.responseText);
+                }
+                initScatterChart1();
+                initScatterChart2();
+                initScatterChart3();
+                initScatterChart4();
+            };
+            function applyStyle(chart) {
+                chart.getPlot().setDataBackgroundColor(new jsfc.Color(255, 255, 255));
+                chart.getPlot().getXAxis().setGridLinesVisible(false);
+                chart.getPlot().getXAxis().setTickLabelFont(new jsfc.Font("sans-serif", 10));
+                chart.getPlot().getYAxis().setGridLinesVisible(false);    
+                chart.getPlot().getYAxis().setTickLabelFont(new jsfc.Font("sans-serif", 10));
+            };
+            function initScatterChart1() {
+                datasets[1] = jsfc.DatasetUtils.extractXYDatasetFromColumns(allData, "sepal length", "petal width");
+                //datasets[1].setProperty("setosa", 13, "color", "red");
+                datasets[1].select("select", "setosa", 13)
+                datasets[1].select("select", "setosa", 28);
+                datasets[1].select("hilite", "setosa", 13);
+                datasets[1].select("hilite", "setosa", 17);
+                datasets[1].select("hilite", "setosa", 33);
+                datasets[1].setProperty("setosa", 14, "color", "yellow");
+                
+                charts[1] = jsfc.Charts.createScatterChart("Scatter Chart Demo", "http://www.jfree.org/jsfreechart", datasets[1], "Sepal Length", "Petal Width");
+                //charts[1].plot.renderer.toolTipHandler = xyToolTipHandler;
+                charts[1].setSize(400, 340);
+                applyStyle(charts[1]);
+                managers[1] = new jsfc.ChartManager(document.getElementById("scatter_chart_1_svg"), charts[1]);
+                managers[1].refreshDisplay();
+            };
+            function initScatterChart2() {
+                datasets[2] = jsfc.DatasetUtils.extractXYDatasetFromColumns(allData, "sepal length", "petal length");
+                charts[2] = jsfc.Charts.createScatterChart("Scatter Chart Demo", "http://www.jfree.org/jsfreechart", datasets[2], "Sepal Length", "Petal Length");
+                charts[2].setSize(400, 340);
+                applyStyle(charts[2]);
+                managers[2] = new jsfc.ChartManager(document.getElementById("scatter_chart_2_svg"), charts[2]);
+                managers[2].refreshDisplay();
+            };
+            function initScatterChart3() {
+                datasets[3] = jsfc.DatasetUtils.extractXYDatasetFromColumns(allData, "sepal width", "petal width");
+                charts[3] = jsfc.Charts.createScatterChart("Scatter Chart Demo", "http://www.jfree.org/jsfreechart", datasets[3], "Sepal Width", "Petal Width");
+                charts[3].setSize(400, 340);
+                applyStyle(charts[3]);
+                managers[3] = new jsfc.ChartManager(document.getElementById("scatter_chart_3_svg"), charts[3]);
+                managers[3].refreshDisplay();
+            };
+            function initScatterChart4() {
+                datasets[4] = jsfc.DatasetUtils.extractXYDatasetFromColumns(allData, "sepal width", "petal length");
+                charts[4] = jsfc.Charts.createScatterChart("Scatter Chart Demo", "http://www.jfree.org/jsfreechart", datasets[4], "Sepal Width", "Petal Length");
+                applyStyle(charts[4]);
+                charts[4].setSize(400, 340);
+                managers[4] = new jsfc.ChartManager(document.getElementById("scatter_chart_4_svg"), charts[4]);
+                managers[4].refreshDisplay();
+            };
+            function addScatterItem(index) {
+                var s = Math.round(Math.random() * 2);
+                var seriesKey = datasets[index].seriesKey(s);
+                var x = Math.random() * 8.0;
+                var y = 2 + Math.random() * 4.0;
+                datasets[index].add(seriesKey, x, y, false);
+                resetZoom(index);
+            };
+            function removeScatterItem(index) {
+                var s = Math.round(Math.random() * 2);
+                var seriesKey = datasets[index].seriesKey(s);
+                var items = datasets[index].itemCount(s);
+                if (items > 0) {
+                    var i = Math.round(Math.random() * (items - 1));
+                    datasets[index].remove(s, i, false);
+                }
+                resetZoom(index);
+            };
+            function resetZoom(index) {
+                var plot = charts[index].getPlot();
+                plot.setNotify(false);
+                charts[index].getPlot().getXAxis().setAutoRange(true);
+                charts[index].getPlot().getYAxis().setAutoRange(true);
+                plot.setNotify(true);
+            };
+        </script>   
+        <h4>JavaScript Chart Demo 1:</h4>
+        <p>The key aspects of this demo are:</p>
+        <ul>
+            <li>dataset objects are maintained separately from the visual representation;</li>
+            <li>data is read from a text file (JSON) and it is possible to transform/extract one type of dataset (<code>XYDataset</code>) from another (<code>KeyedValues3DDataset</code>);</li>
+            <li>charts (views) are created using the <strong>JSFreeChart</strong> chart library that reads from the datasets (models);</li>
+            <li>the charts are updated automatically when the corresponding dataset is modified;</li>
+            <li>some interactive features (zooming, panning and tooltips) are implemented;</li>
+        </ul>
+        <table>
+            <tr>
+                <td>
+                    <div id="scatter_chart_1"><svg id="scatter_chart_1_svg" width="400" height="340"></svg></div>
+                    <input type="button" name="add_button_1" value="Add item" onclick="addScatterItem(1)" />
+                    <input type="button" name="remove_button_1" value="Remove item" onclick="removeScatterItem(1)"/>
+                    <input type="button" name="resettton_1" value="Reset Zoom" onclick="resetZoom(1)"/>
+                </td>
+                <td>
+                    <div id="scatter_chart_2"><svg id="scatter_chart_2_svg" width="400" height="340"></div>
+                    <input type="button" name="add_button_2" value="Add item" onclick="addScatterItem(2)" />
+                    <input type="button" name="remove_button_2" value="Remove item" onclick="removeScatterItem(2)"/>
+                    <input type="button" name="resettton_2" value="Reset Zoom" onclick="resetZoom(2)"/>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <div id="scatter_chart_3"><svg id="scatter_chart_3_svg" width="400" height="340"></div>
+                    <input type="button" name="add_button_3" value="Add item" onclick="addScatterItem(3)" />
+                    <input type="button" name="remove_button_3" value="Remove item" onclick="removeScatterItem(3)"/>
+                    <input type="button" name="resettton_3" value="Reset Zoom" onclick="resetZoom(3)"/>
+                </td>
+                <td>
+                    <div id="scatter_chart_4"><svg id="scatter_chart_4_svg" width="400" height="340"></div>
+                    <input type="button" name="add_button_4" value="Add item" onclick="addScatterItem(4)" />
+                    <input type="button" name="remove_button_4" value="Remove item" onclick="removeScatterItem(4)"/>
+                    <input type="button" name="resettton_4" value="Reset Zoom" onclick="resetZoom(4)"/>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

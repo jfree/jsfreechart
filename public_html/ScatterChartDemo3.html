@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Scatter Plot with 5000 data items</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script type="text/javascript" src="src/JSFreeChart.js"></script>
+        <script type="text/javascript" src="src/Charts.js"></script>
+        <script type="text/javascript" src="src/ChartManager.js"></script>
+        <script type="text/javascript" src="src/Args.js"></script>
+        <script type="text/javascript" src="src/Utils.js"></script>
+        <script type="text/javascript" src="src/util/NumberFormat.js"></script>
+        <script type="text/javascript" src="src/axis/AxisSpace.js"></script>
+        <script type="text/javascript" src="src/axis/BaseValueAxis.js"></script>
+        <script type="text/javascript" src="src/axis/Crosshair.js"></script>
+        <script type="text/javascript" src="src/axis/LabelOrientation.js"></script>
+        <script type="text/javascript" src="src/axis/NumberTickSelector.js"></script>
+        <script type="text/javascript" src="src/axis/TickMark.js"></script>
+        <script type="text/javascript" src="src/data/DatasetUtils.js"></script>
+        <script type="text/javascript" src="src/data/Map.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues2DDataset.js"></script>
+        <script type="text/javascript" src="src/data/Range.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues3DDataset.js"></script>
+        <script type="text/javascript" src="src/data/StandardXYDataset.js"></script>
+        <script type="text/javascript" src="src/data/XYDatasetUtils.js"></script>
+        <script type="text/javascript" src="src/graphics/Anchor2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Color.js"></script>
+        <script type="text/javascript" src="src/Colors.js"></script>
+        <script type="text/javascript" src="src/graphics/Dimension.js"></script>
+        <script type="text/javascript" src="src/graphics/Fit2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Font.js"></script>
+        <script type="text/javascript" src="src/graphics/HAlign.js"></script>
+        <script type="text/javascript" src="src/graphics/Insets.js"></script>
+        <script type="text/javascript" src="src/graphics/LineCap.js"></script>
+        <script type="text/javascript" src="src/graphics/LineJoin.js"></script>
+        <script type="text/javascript" src="src/graphics/Offset2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Point2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Polygon.js"></script>
+        <script type="text/javascript" src="src/graphics/RefPt2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Shape.js"></script>
+        <script type="text/javascript" src="src/graphics/Stroke.js"></script>
+        <script type="text/javascript" src="src/graphics/Rectangle.js"></script>
+        <script type="text/javascript" src="src/graphics/RectangleEdge.js"></script>
+        <script type="text/javascript" src="src/graphics/Scale2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGLayer.js"></script>
+        <script type="text/javascript" src="src/graphics/BaseContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/TextAnchor.js"></script>
+        <script type="text/javascript" src="src/graphics/TextUtils.js"></script>
+        <script type="text/javascript" src="src/graphics/Transform.js"></script>
+        <script type="text/javascript" src="src/graphics/Utils2D.js"></script>
+        <script type="text/javascript" src="src/interaction/Modifier.js"></script>
+        <script type="text/javascript" src="src/interaction/BaseMouseHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/ClickSelectionHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/PolygonSelectionHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/XYCrosshairHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
+        <script type="text/javascript" src="src/legend/LegendBuilder.js"></script>
+        <script type="text/javascript" src="src/legend/LegendItemInfo.js"></script>
+        <script type="text/javascript" src="src/legend/StandardLegendBuilder.js"></script>
+        <script type="text/javascript" src="src/legend/FixedLegendBuilder.js"></script>
+        <script type="text/javascript" src="src/axis/LinearAxis.js"></script>
+        <script type="text/javascript" src="src/axis/LogAxis.js"></script>
+        <script type="text/javascript" src="src/labels/StandardXYLabelGenerator.js"></script>
+        <script type="text/javascript" src="src/plot/XYPlot.js"></script>
+        <script type="text/javascript" src="src/renderer/ColorSource.js"></script>
+        <script type="text/javascript" src="src/renderer/BaseXYRenderer.js"></script>
+        <script type="text/javascript" src="src/renderer/ScatterRenderer.js"></script>
+        <script type="text/javascript" src="src/table/BaseElement.js"></script>
+        <script type="text/javascript" src="src/table/FlowElement.js"></script>
+        <script type="text/javascript" src="src/table/GridElement.js"></script>
+        <script type="text/javascript" src="src/table/RectangleElement.js"></script>
+        <script type="text/javascript" src="src/table/StandardRectanglePainter.js"></script>
+        <script type="text/javascript" src="src/table/TextElement.js"></script>
+        <script type="text/javascript" src="src/Chart.js"></script>
+    </head>
+    <body onload="installChart();">
+        <script type="application/javascript">
+            function updateShow() {
+                var checkBox = document.getElementById("showcb");
+                if (checkBox.checked) {
+                    var snapCheckBox = document.getElementById("snapcb");
+                    document.crosshairHandler = new jsfc.XYCrosshairHandler(document.chartManager);
+                    document.crosshairHandler.setSnapToItem(snapCheckBox.checked);
+                    document.chartManager.addAuxiliaryHandler(document.crosshairHandler);
+                } else {
+                    document.chartManager.removeAuxiliaryHandler(document.crosshairHandler);
+                    document.crosshairHandler = null;
+                }
+            }
+            function updateSnap() {
+                var checkBox = document.getElementById("snapcb");
+                if (document.crosshairHandler) {
+                    document.crosshairHandler.setSnapToItem(checkBox.checked);
+                }
+            }
+            function installChart() {
+                var dataset = new jsfc.StandardXYDataset();
+                var factor = 1;
+                for (var s = 1; s <= 5; s++) {
+                    for (var i = 0; i < 10000; i++) {
+                        dataset.add("Series " + s, Math.random() * factor, Math.random() * factor);
+                    }    
+                }
+                var itemKey = dataset.getItemKey(0, 1);
+                dataset.setItemProperty("Series 1", itemKey, "color", "#FF0000");
+                
+                var plot = new jsfc.XYPlot(dataset);
+                plot.setStaggerRendering(true);
+                plot.setAxisOffsets(new jsfc.Insets(4, 4, 4, 4));
+                var xAxis = plot.getXAxis();
+                var yAxis = plot.getYAxis();
+                xAxis.setLabel("x-axis");
+                xAxis.labelFont = new jsfc.Font("sans-serif", 12, true);
+                xAxis.tickLabelFont = new jsfc.Font("sans-serif", 10);
+                yAxis.setLabel("y-axis");
+                yAxis.labelFont = new jsfc.Font("sans-serif", 12, true);
+                yAxis.tickLabelFont = new jsfc.Font("sans-serif", 10);
+                
+                plot.renderer = new jsfc.ScatterRenderer(plot);
+                var chart = new jsfc.Chart(plot);
+                var titleAnchor = new jsfc.Anchor2D(jsfc.RefPt2D.TOP_LEFT);
+                chart.setTitleAnchor(titleAnchor);
+                chart.setTitle("Scatter Chart in SVG", "http://www.jfree.org/", 
+                        titleAnchor);
+                chart.setSize(600, 400);
+                var svg = document.getElementById("chart_svg");
+                var manager = new jsfc.ChartManager(svg, chart);
+                document.chartManager = manager;
+                
+                // add a mouse handler to draw crosshairs
+                //var crosshairHandler = new jsfc.CrosshairHandler(manager);
+                //document.chartManager.addAuxiliaryHandler(crosshairHandler);
+                var modifiers = new jsfc.Modifier(false, false, true, false);
+                var selectHandler = new jsfc.PolygonSelectionHandler(manager, modifiers);
+                manager.addLiveHandler(selectHandler);
+                document.chartManager.refreshDisplay();                
+            };
+            
+        </script>   
+        <h4>Scatter Chart with Crosshairs:</h4>
+        <p>In this demo we have a scatter chart with crosshairs.  First, check the 
+        checkbox below then move the mouse pointer over the chart...</p>
+        <input id="showcb" type="checkbox" onchange="updateShow()" />Show crosshairs?
+        <input id="snapcb" type="checkbox" onchange="updateSnap()" />Snap to data points?
+        <div id="scatter_chart_1" class="chart_container">
+            <svg id="chart_svg" width="600px" height="400px"></svg>            
+        </div>
+    </body>
+</html>
