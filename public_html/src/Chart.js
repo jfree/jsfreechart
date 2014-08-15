@@ -372,8 +372,7 @@ jsfc.Chart.prototype._adjustMargin = function(margin, dim, anchor) {
 };
     
 /**
- * Draws the chart on a 2D drawing context (HTML5 Canvas for example).  This
- * is provided as an alternative rendering path.
+ * Draws the chart on a 2D drawing context.
  * 
  * @param {!jsfc.Context2D} ctx  the drawing context.
  * @param {!jsfc.Rectangle} bounds  the drawing bounds.
