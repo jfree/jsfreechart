@@ -25,7 +25,7 @@
  */
 jsfc.KeyedValueLabels = function() {
     if (!(this instanceof jsfc.KeyedValueLabels)) {
-        return new jsfc.KeyedValueLabels();
+        throw new Error("Use 'new' for construction.");
     }
     this.format = "{K} = {V}";
     this.valueDP = 2;
