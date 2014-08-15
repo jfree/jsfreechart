@@ -480,8 +480,7 @@ jsfc.CategoryPlot.prototype.notifyListeners = function() {
 };
 
 /**
- * Draws the plot on a 2D rendering context (such as the HTML5 canvas). This
- * provides an alternative rendering approach.
+ * Draws the plot on a 2D rendering context.
  * 
  * @param {!jsfc.Context2D} ctx  the graphics context.
  * @param {!jsfc.Rectangle} bounds  the chart bounds.
