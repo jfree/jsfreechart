@@ -242,6 +242,8 @@ jsfc.CategoryPlot.prototype.datasetChanged = function() {
  * from a bar renderer to a stacked bar renderer would require the axis ranges
  * to be updated).
  * 
+ * @param {jsfc.CategoryRenderer} renderer  the renderer.
+ * 
  * @returns {undefined}
  */
 jsfc.CategoryPlot.prototype.rendererChanged = function(renderer) {
