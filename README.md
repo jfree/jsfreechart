@@ -15,6 +15,11 @@ Overview
 
 **JSFreeChart** is free software under the terms of the GNU General Public License version 3.
 
+Contributions
+-------------
+External contributions are welcome, but contributors will be required to assign
+copyright.
+
 More Information
 ----------------
 To find out more about **JSFreeChart**, please visit our website:
