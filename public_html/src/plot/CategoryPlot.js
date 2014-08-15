@@ -18,7 +18,7 @@
 /**
  * Creates a new plot for the specified dataset.
  * 
- * @class An CategoryPlot is a two-dimensional plot where the x-axis is ordinal
+ * @class A CategoryPlot is a two-dimensional plot where the x-axis is ordinal
  * and the y-axis is numerical (for example, a typical bar chart).
  * 
  * @constructor 
