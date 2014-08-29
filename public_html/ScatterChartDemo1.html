@@ -49,6 +49,7 @@
         <script type="text/javascript" src="src/interaction/BaseMouseHandler.js"></script>
         <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/RectangleSelectionHandler.js"></script>
         <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
         <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
         <script type="text/javascript" src="src/legend/LegendBuilder.js"></script>
@@ -117,6 +118,7 @@
                 charts[1].setSize(400, 340);
                 applyStyle(charts[1]);
                 managers[1] = new jsfc.ChartManager(document.getElementById("scatter_chart_1_svg"), charts[1]);
+                managers[1].addLiveHandler(new jsfc.RectangleSelectionHandler(managers[1], new jsfc.Modifier(false, false, true, false)));
                 managers[1].refreshDisplay();
             };
             function initScatterChart2() {
