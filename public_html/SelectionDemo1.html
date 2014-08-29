@@ -55,6 +55,7 @@
         <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PolygonSelectionHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/RectangleSelectionHandler.js"></script>
         <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
         <script type="text/javascript" src="src/interaction/XYCrosshairHandler.js"></script>
         <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
@@ -117,6 +118,11 @@
                         true);
                 var selectHandler = new jsfc.ClickSelectionHandler(manager, modifiers);
                 manager.addAuxiliaryHandler(selectHandler);
+                
+                // add rectangle selection handler
+                modifiers = new jsfc.Modifier(false, false, false, false, true);
+                var selectHandler2 = new jsfc.RectangleSelectionHandler(manager, modifiers);
+                manager.addLiveHandler(selectHandler2);
                 document.chartManager.refreshDisplay();                
             };
             
