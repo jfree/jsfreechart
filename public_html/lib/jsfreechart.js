@@ -1236,7 +1236,7 @@ jsfc.RectangleElement = function(a, b) {
   this._width = a;
   this._height = b;
   this._fillColor = new jsfc.Color(255, 255, 255);
-  this._backgroundPainter = new jsfc.StandardRectanglePainter(new jsfc.Color(255, 255, 255, 0.3), new jsfc.Color(0, 0, 0, 0));
+  this._backgroundPainter = new jsfc.StandardRectanglePainter(new jsfc.Color(255, 255, 255, .3), new jsfc.Color(0, 0, 0, 0));
 };
 jsfc.RectangleElement.prototype = new jsfc.BaseElement;
 jsfc.RectangleElement.prototype.width = function(a) {
@@ -1321,7 +1321,7 @@ jsfc.TextElement = function(a) {
   this._font = new jsfc.Font("Palatino, serif", 16);
   this._color = new jsfc.Color(0, 0, 0);
   this._halign = jsfc.HAlign.LEFT;
-  this._backgroundPainter = new jsfc.StandardRectanglePainter(new jsfc.Color(255, 255, 255, 0.3), new jsfc.Color(0, 0, 0, 0));
+  this._backgroundPainter = new jsfc.StandardRectanglePainter(new jsfc.Color(255, 255, 255, .3), new jsfc.Color(0, 0, 0, 0));
 };
 jsfc.TextElement.prototype = new jsfc.BaseElement;
 jsfc.TextElement.prototype.getText = function() {
@@ -1390,7 +1390,7 @@ jsfc.TextElement.prototype.draw = function(a, b) {
   var c = this.getInsets(), d = this.layoutElements(a, b)[0];
   a.setFillColor(this._color);
   a.setFont(this._font);
-  var e = d.y() + c.top(), f = d.maxY() - c.bottom(), e = f - 0.18 * (f - e);
+  var e = d.y() + c.top(), f = d.maxY() - c.bottom(), e = f - .18 * (f - e);
   a.drawString(this._text, d.x() + c.left(), e);
 };
 jsfc.Bin = function(a, b, c, d) {
@@ -3408,12 +3408,12 @@ jsfc.StandardCategoryAxis = function(a) {
   this._tickLabelFactor = 1.4;
   this._tickLabelOrientation = null;
   this._tickMarkOuterLength = this._tickMarkInnerLength = 2;
-  this._tickMarkStroke = new jsfc.Stroke(0.5);
+  this._tickMarkStroke = new jsfc.Stroke(.5);
   this._tickMarkColor = new jsfc.Color(100, 100, 100);
   this._axisLineColor = new jsfc.Color(100, 100, 100);
-  this._axisLineStroke = new jsfc.Stroke(0.5);
-  this._upperMargin = this._lowerMargin = 0.05;
-  this._categoryMargin = 0.1;
+  this._axisLineStroke = new jsfc.Stroke(.5);
+  this._upperMargin = this._lowerMargin = .05;
+  this._categoryMargin = .1;
   this._categories = [];
   this._listeners = [];
 };
@@ -3503,7 +3503,7 @@ jsfc.StandardCategoryAxis.prototype.draw = function(a, b, c, d, e) {
     a.setFillColor(this._tickLabelColor);
     n = b ? n + this._tickLabelMargin.bottom() : n + this._tickLabelMargin.top();
     for (f = 0;f < c.length;f++) {
-      g = c[f], h = this.keyToRange(g.label, k, k + m).value(0.5), 0 < this._tickMarkInnerLength + this._tickMarkOuterLength && (a.setLineStroke(this._tickMarkStroke), a.setLineColor(this._tickMarkColor), b ? (a.drawLine(h, l - e - this._tickMarkOuterLength, h, l - e + this._tickMarkInnerLength), a.drawAlignedString(g.label, h, l - n, jsfc.TextAnchor.BOTTOM_CENTER)) : (a.drawLine(h, l + d + e - this._tickMarkInnerLength, h, l + d + e + this._tickMarkOuterLength), a.drawAlignedString(g.label, h, l + 
+      g = c[f], h = this.keyToRange(g.label, k, k + m).value(.5), 0 < this._tickMarkInnerLength + this._tickMarkOuterLength && (a.setLineStroke(this._tickMarkStroke), a.setLineColor(this._tickMarkColor), b ? (a.drawLine(h, l - e - this._tickMarkOuterLength, h, l - e + this._tickMarkInnerLength), a.drawAlignedString(g.label, h, l - n, jsfc.TextAnchor.BOTTOM_CENTER)) : (a.drawLine(h, l + d + e - this._tickMarkInnerLength, h, l + d + e + this._tickMarkOuterLength), a.drawAlignedString(g.label, h, l + 
       d + n, jsfc.TextAnchor.TOP_CENTER)));
     }
     a.setLineColor(this._axisLineColor);
@@ -3616,7 +3616,7 @@ jsfc.BaseValueAxis.init = function(a, b) {
   b._tickLabelFont = new jsfc.Font("Palatino;serif", 12);
   b._tickLabelColor = new jsfc.Color(0, 0, 0);
   b._axisLineColor = new jsfc.Color(100, 100, 100);
-  b._axisLineStroke = new jsfc.Stroke(0.5);
+  b._axisLineStroke = new jsfc.Stroke(.5);
   b._gridLinesVisible = !0;
   b._gridLineStroke = new jsfc.Stroke(1);
   b._gridLineColor = new jsfc.Color(255, 255, 255);
@@ -3718,7 +3718,7 @@ jsfc.Crosshair = function(a) {
   }
   this._value = a;
   this._color = jsfc.Colors.BLUE;
-  this._stroke = new jsfc.Stroke(0.5);
+  this._stroke = new jsfc.Stroke(.5);
   this._label = null;
   this._labelAnchor = jsfc.RefPt2D.TOP_RIGHT;
   this._labelFont = new jsfc.Font("sans-serif", 10);
@@ -3835,14 +3835,14 @@ jsfc.LinearAxis.init = function(a, b) {
   b._upperBound = 1;
   b._autoRange = !0;
   b._autoRangeIncludesZero = !1;
-  b._lowerMargin = 0.05;
-  b._upperMargin = 0.05;
+  b._lowerMargin = .05;
+  b._upperMargin = .05;
   b._defaultRange = new jsfc.Range(0, 1);
   b._tickSelector = new jsfc.NumberTickSelector(!1);
   b._formatter = new jsfc.NumberFormat(2);
   b._tickMarkInnerLength = 0;
   b._tickMarkOuterLength = 2;
-  b._tickMarkStroke = new jsfc.Stroke(0.5);
+  b._tickMarkStroke = new jsfc.Stroke(.5);
   b._tickMarkColor = new jsfc.Color(100, 100, 100);
   b._tickLabelMargin = new jsfc.Insets(2, 2, 2, 2);
   b._tickLabelFactor = 1.4;
@@ -3923,7 +3923,7 @@ jsfc.LinearAxis.prototype.setTickLabelFormatOverride = function(a, b) {
 jsfc.LinearAxis.prototype._applyAutoRange = function(a, b) {
   this._autoRangeIncludesZero && (0 < a && (a = 0), 0 > b && (b = 0));
   var c = b - a, d;
-  0 < c ? (d = this._lowerMargin * c, c *= this._upperMargin) : (d = 0.5 * this._defaultRange.length(), c = 0.5 * this._defaultRange.length());
+  0 < c ? (d = this._lowerMargin * c, c *= this._upperMargin) : (d = .5 * this._defaultRange.length(), c = .5 * this._defaultRange.length());
   this.setBounds(a - d, b + c, !1, !0);
 };
 jsfc.LinearAxis.prototype.valueToCoordinate = function(a, b, c) {
@@ -4416,7 +4416,7 @@ jsfc.ScatterRenderer.prototype.drawItem = function(a, b, c, d, e, f, g) {
   f = this._radius;
   d.isSelected("selection", g, h) && (f *= 2);
   a.setFillColor(c);
-  a.setLineStroke(new jsfc.Stroke(0.2));
+  a.setLineStroke(new jsfc.Stroke(.2));
   a.setLineColor(jsfc.Colors.BLACK);
   a.setHint("ref", [g, h]);
   a.drawCircle(e, b, f);
@@ -4954,7 +4954,7 @@ jsfc.XYPlot.prototype._drawProgressIndicator = function(a, b, c, d) {
   a.clear();
   var e = jsfc.XYDatasetUtils.itemCount(this._dataset), f = this._itemsProcessed(c, this._dataset);
   c = b.centerX();
-  var g = b.maxY() - 0.1 * b.height();
+  var g = b.maxY() - .1 * b.height();
   d = b.width() / 1.2;
   b = this._progressLabelFont.size + 4;
   var e = f / e, f = c - d / 2, g = g - b / 2, h = c + d / 2;
@@ -5107,11 +5107,11 @@ jsfc.BaseMouseHandler.prototype.mouseWheel = function(a) {
 };
 jsfc.BaseMouseHandler.prototype.cleanUp = function() {
 };
-jsfc.ClickSelectionHandler = function(a) {
+jsfc.ClickSelectionHandler = function(a, b) {
   if (!(this instanceof jsfc.ClickSelectionHandler)) {
     throw Error("Use 'new' for constructor.");
   }
-  jsfc.BaseMouseHandler.init(a, null, this);
+  jsfc.BaseMouseHandler.init(a, b, this);
   this._extendModifier = new jsfc.Modifier(!1, !1, !1, !0);
   this._startPoint = null;
 };
@@ -5198,7 +5198,7 @@ jsfc.PolygonSelectionHandler = function(a, b) {
   this._extendModifier = new jsfc.Modifier(!1, !1, !1, !0);
   this._polygon = null;
   this._fillColor = new jsfc.Color(255, 255, 100, 100);
-  this._lineStroke = new jsfc.Stroke(0.5);
+  this._lineStroke = new jsfc.Stroke(.5);
   this._lineStroke.setLineDash([3, 3]);
   this._lineColor = jsfc.Colors.RED;
 };
@@ -5248,6 +5248,65 @@ jsfc.PolygonSelectionHandler.prototype._setPathFromPolygon = function(a, b) {
     a.lineTo(f.x(), f.y());
   }
   a.lineTo(c.x(), c.y());
+};
+jsfc.RectangleSelectionHandler = function(a, b) {
+  if (!(this instanceof jsfc.RectangleSelectionHandler)) {
+    throw Error("Use 'new' for constructor.");
+  }
+  jsfc.BaseMouseHandler.init(a, b, this);
+  this._extendModifier = new jsfc.Modifier(!1, !1, !1, !0);
+  this._rectangle = null;
+  this._fillColor = new jsfc.Color(255, 255, 100, 100);
+  this._lineStroke = new jsfc.Stroke(.5);
+  this._lineStroke.setLineDash([3, 3]);
+  this._lineColor = jsfc.Colors.RED;
+};
+jsfc.RectangleSelectionHandler.prototype = new jsfc.BaseMouseHandler;
+jsfc.RectangleSelectionHandler.prototype.mouseDown = function(a) {
+  var b = this._manager.getElement().getBoundingClientRect(), c = a.clientX - b.left;
+  a = a.clientY - b.top;
+  this._manager.getChart().getPlot().dataArea().constrainedPoint(c, a);
+  this._rectangle = new jsfc.Rectangle(c, a, 0, 0);
+};
+jsfc.RectangleSelectionHandler.prototype.mouseMove = function(a) {
+  if (null !== this._rectangle) {
+    var b = this._manager.getElement().getBoundingClientRect(), c = a.clientX - b.left, d = a.clientY - b.top;
+    this._manager.getChart().getPlot().dataArea().constrainedPoint(c, d);
+    a = this._rectangle.x();
+    b = this._rectangle.y();
+    c = Math.max(0, c - a);
+    d = Math.max(0, d - b);
+    this._rectangle.set(a, b, c, d);
+    var e = this._manager.getContext();
+    e.setHint("layer", "rectangle");
+    e.clear();
+    e.setFillColor(this._fillColor);
+    e.setLineColor(this._lineColor);
+    e.setLineStroke(this._lineStroke);
+    e.drawRect(a, b, c, d);
+    e.setHint("layer", "default");
+  }
+};
+jsfc.RectangleSelectionHandler.prototype.mouseUp = function(a) {
+  this._manager.getElement().getBoundingClientRect();
+  var b = this._manager.getChart().getPlot();
+  b.setNotify(!1);
+  var c = b.getDataset();
+  this._extendModifier.matchEvent(a) || c.clearSelection("selection");
+  a = b.getXAxis();
+  for (var d = b.getYAxis(), e = b.dataArea(), f = 0;f < c.seriesCount();f++) {
+    for (var g = c.seriesKey(f), h = 0;h < c.itemCount(f);h++) {
+      var k = c.item(f, h), l = a.valueToCoordinate(k.x, e.minX(), e.maxX()), k = d.valueToCoordinate(k.y, e.maxY(), e.minY());
+      this._rectangle.contains(l, k) && c.select("selection", g, c.itemKey(f, h));
+    }
+  }
+  b.setNotify(!0);
+  b = this._manager.getContext();
+  b.setHint("layer", "rectangle");
+  b.clear();
+  b.setHint("layer", "default");
+  this._rectangle = null;
+  this._manager._liveMouseHandler = null;
 };
 jsfc.XYCrosshairHandler = function(a) {
   if (!(this instanceof jsfc.XYCrosshairHandler)) {
@@ -5333,7 +5392,7 @@ jsfc.WheelHandler = function(a, b) {
 jsfc.WheelHandler.prototype = new jsfc.BaseMouseHandler;
 jsfc.WheelHandler.prototype.mouseWheel = function(a) {
   var b;
-  b = a.wheelDelta ? a.wheelDelta / 720 * -0.2 + 1 : 0.05 * a.detail + 1;
+  b = a.wheelDelta ? a.wheelDelta / 720 * -.2 + 1 : .05 * a.detail + 1;
   var c = this.manager.getChart().getPlot(), d = c.isXZoomable(), e = c.isYZoomable(), f = this.manager.getElement();
   d && c.zoomXAboutAnchor(b, a.clientX - f.getBoundingClientRect().left, !e);
   e && c.zoomYAboutAnchor(b, a.clientY - f.getBoundingClientRect().top);
@@ -5362,7 +5421,7 @@ jsfc.ZoomHandler.prototype.mouseMove = function(a) {
     c.clear();
     a = this.zoomPoint.x();
     var b = this.zoomPoint.y(), e = d.x() - a, d = d.y() - b;
-    0 < e && 0 < d && (c.setFillColor(this._fillColor), c.setLineStroke(new jsfc.Stroke(0.1)), c.drawRect(a, b, e, d));
+    0 < e && 0 < d && (c.setFillColor(this._fillColor), c.setLineStroke(new jsfc.Stroke(.1)), c.drawRect(a, b, e, d));
     c.setHint("layer", "default");
   }
 };
@@ -5389,7 +5448,7 @@ jsfc.ZoomHandler.prototype.mouseUp = function(a) {
 };
 jsfc.KeyedValueLabels = function() {
   if (!(this instanceof jsfc.KeyedValueLabels)) {
-    return new jsfc.KeyedValueLabels;
+    throw Error("Use 'new' for construction.");
   }
   this.format = "{K} = {V}";
   this.percentDP = this.valueDP = 2;
