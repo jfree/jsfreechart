@@ -95,6 +95,7 @@ java -jar ~/jars/compiler.jar --warning_level VERBOSE --compilation_level SIMPLE
 --js public_html/src/interaction/LogEventHandler.js \
 --js public_html/src/interaction/PanHandler.js \
 --js public_html/src/interaction/PolygonSelectionHandler.js \
+--js public_html/src/interaction/RectangleSelectionHandler.js \
 --js public_html/src/interaction/XYCrosshairHandler.js \
 --js public_html/src/interaction/WheelHandler.js \
 --js public_html/src/interaction/ZoomHandler.js \
