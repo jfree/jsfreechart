@@ -65,6 +65,9 @@ jsfc.ClickSelectionHandler.prototype.mouseDown = function(e) {
  * @returns {undefined}
  */
 jsfc.ClickSelectionHandler.prototype.mouseUp = function(e) {
+    if (this._startPoint == null) {
+        return;
+    }
     var element = this._manager.getElement();
     var r = element.getBoundingClientRect();
     var x = e.clientX - r.left;
