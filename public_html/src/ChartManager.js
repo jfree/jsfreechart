@@ -19,13 +19,19 @@
 
 /**
  * Creates a chart manager to handle the interaction on the specified chart.
+ * Some standard interaction handlers can be installed by default, you can
+ * skip these by passing false for the relevant flags.  You can also register 
+ * handlers individually if you want more control over the modifier keys or 
+ * want to use more complex handlers (for example, the PolygonSelectionHandler).
  * 
  * @constructor 
  * @param {Element} element
  * @param {!jsfc.Chart} chart
- * @param {boolean} [dragZoomEnabled]
- * @param {boolean} [wheelZoomEnabled]
- * @param {boolean} [panEnabled]
+ * @param {boolean} [dragZoomEnabled] enable zooming by mouse-dragging a 
+ *     zoom rectangle (no modifier key).
+ * @param {boolean} [wheelZoomEnabled]  enable mouse wheel zooming.
+ * @param {boolean} [panEnabled]  enable panning by dragging the mouse while
+ *     holding down the ALT key.
  * @returns {undefined}
  * 
  * @class A chart manager handles user interaction with a chart that is 
@@ -100,27 +106,52 @@ jsfc.ChartManager.prototype.getContext = function() {
 };
 
 /**
+ * Returns the current live handler (may be null).
+ * 
+ * @returns {jsfc.MouseHandler}
+ */
+jsfc.ChartManager.prototype.getLiveHandler = function() {
+    return this._liveMouseHandler;    
+}
+
+/**
  * Adds a handler to the list of available live handlers.  Exactly ONE of the
  * live handlers will be selected (on the basis of modifier keys) to handle
  * a user interaction with the chart.
  * 
- * @param {!jsfc.MouseHandler} handler
+ * @param {!jsfc.MouseHandler} handler  the handler.
  * @returns {undefined}
  */
 jsfc.ChartManager.prototype.addLiveHandler = function(handler) {
     this._availableLiveMouseHandlers.push(handler); 
 };
 
+/**
+ * Removes a handler from the list of available live handlers.
+ * 
+ * @param {!jsfc.MouseHandler} handler  the handler.
+ * @returns {undefined}
+ */
 jsfc.ChartManager.prototype.removeLiveHandler = function(handler) {
     var i = jsfc.Utils.findItemInArray(handler, this._availableLiveMouseHandlers);
     if (i !== -1) {
-        handler.cleanUp();
         this._availableLiveMouseHandlers.splice(i, 1);
     }
 };
 
 /**
- * Adds an auxiliary mouse handler.
+ * Resets the current live handler.  
+ * @returns {undefined}
+ */
+jsfc.ChartManager.prototype.resetLiveHandler = function() {
+    this._liveMouseHandler.cleanUp();
+    this._liveMouseHandler = null;
+}
+
+/**
+ * Adds an auxiliary mouse handler.  All auxiliary handlers will receive 
+ * interaction events so when you add multiple handlers you need to ensure that
+ * their behaviour does not conflict.
  * 
  * @param {jsfc.MouseHandler} handler  the new handler.
  * @returns {undefined}
@@ -129,6 +160,12 @@ jsfc.ChartManager.prototype.addAuxiliaryHandler = function(handler) {
     this._auxiliaryMouseHandlers.push(handler);
 };
 
+/**
+ * Removes an auxiliary handler.
+ * 
+ * @param {jsfc.MouseHandler} handler  the handler to be removed.
+ * @returns {undefined}
+ */
 jsfc.ChartManager.prototype.removeAuxiliaryHandler = function(handler) {
     // find the handler (ensure it exists)
     var i = jsfc.Utils.findItemInArray(handler, this._auxiliaryMouseHandlers);
@@ -160,7 +197,8 @@ jsfc.ChartManager.prototype.refreshDisplay = function() {
  * @param {!boolean} shift  SHIFT key?
  * @returns {jsfc.MouseHandler}
  */
-jsfc.ChartManager.prototype._matchLiveHandler = function(alt, ctrl, meta, shift) {
+jsfc.ChartManager.prototype._matchLiveHandler = function(alt, ctrl, meta, 
+        shift) {
     var handlers = this._availableLiveMouseHandlers;
     for (var i = 0; i < handlers.length; i++) {
         var h = handlers[i];

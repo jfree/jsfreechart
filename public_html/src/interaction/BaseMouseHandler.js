@@ -66,6 +66,16 @@ jsfc.BaseMouseHandler.prototype.getModifier = function() {
 };
 
 /**
+ * Returns true if this handler is installed as the current live handler,
+ * and false otherwise.
+ * 
+ * @returns {!boolean}
+ */
+jsfc.BaseMouseHandler.prototype.isLiveHandler = function() {
+    return this === this._manager.getLiveHandler();
+};
+
+/**
  * Handles a mouse down event.  This default implementation does nothing, 
  * objects that extend this one can provide their own implementation.
  * 

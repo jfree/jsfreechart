@@ -19,16 +19,19 @@
 
 /**
  * A mouse handler that handles selection by mouse click.
+ * 
  * @constructor
  * @implements {jsfc.MouseHandler}
  * @param {!jsfc.ChartManager} manager  the ChartManager (provides access to 
  *         the chart and dataset).
+ * @param {jsfc.Modifier} [modifier]  the modifier keys (determines when this
+ *         handler will become "live").
  */
-jsfc.ClickSelectionHandler = function(manager) {
+jsfc.ClickSelectionHandler = function(manager, modifier) {
     if (!(this instanceof jsfc.ClickSelectionHandler)) {
         throw new Error("Use 'new' for constructor.");
     }
-    jsfc.BaseMouseHandler.init(manager, null, this);
+    jsfc.BaseMouseHandler.init(manager, modifier, this);
     this._extendModifier = new jsfc.Modifier(false, false, false, true);
     this._startPoint = null;
 };
@@ -56,7 +59,7 @@ jsfc.ClickSelectionHandler.prototype.mouseDown = function(e) {
  * Handles a mouse up event.  If the event location is close to the original
  * mouse down (so this is a click rather than a drag) then the handler looks
  * for a data reference in the target element...if it finds one, then it sets
- * that item to selected.
+ * that item to selected. 
  * 
  * @param {MouseEvent} e  the mouse event.
  * @returns {undefined}
@@ -92,5 +95,12 @@ jsfc.ClickSelectionHandler.prototype.mouseUp = function(e) {
                 }           
             }
         }
+    }
+    
+    // final cleanup - this handler can be used as a live handler
+    // or as an auxiliary, hence the check before resetting
+    this._startPoint = null;
+    if (this.isLiveHandler()) {
+        this._manager.resetLiveHandler();
     }
 };
