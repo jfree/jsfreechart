@@ -56,7 +56,7 @@ jsfc.RectangleSelectionHandler.prototype.mouseDown = function(e) {
     var y = e.clientY - r.top;
     var dataArea = this._manager.getChart().getPlot().dataArea();
     var pt = dataArea.constrainedPoint(x, y);
-    this._rectangle = new jsfc.Rectangle(x, y, 0, 0);
+    this._rectangle = new jsfc.Rectangle(pt.x(), pt.y(), 0, 0);
 };
 
 /**
@@ -76,8 +76,8 @@ jsfc.RectangleSelectionHandler.prototype.mouseMove = function(e) {
     var currPt = dataArea.constrainedPoint(currX, currY);
     var x = this._rectangle.x();
     var y = this._rectangle.y();
-    var w = Math.max(0, currX - x);
-    var h = Math.max(0, currY - y);
+    var w = Math.max(0, currPt.x() - x);
+    var h = Math.max(0, currPt.y() - y);
     this._rectangle.set(x, y, w, h);
 
     var ctx = this._manager.getContext();
