@@ -126,6 +126,11 @@ jsfc.Rectangle.prototype.minX = function() {
     return Math.min(this._x, this._x + this._width);    
 };
     
+/**
+ * Returns the maximum x-value for the rectangle.
+ * 
+ * @returns {number} The maximum x-value.
+ */
 jsfc.Rectangle.prototype.maxX = function() {
     return Math.max(this._x, this._x + this._width);
 };
@@ -139,10 +144,20 @@ jsfc.Rectangle.prototype.centerY = function() {
     return this._y + (this._height / 2);
 };
     
+/**
+ * Returns the minimum y-value for the rectangle.
+ * 
+ * @returns {number} The minimum y-value.
+ */
 jsfc.Rectangle.prototype.minY = function() {
     return Math.min(this._y, this._y + this._height);
 };
     
+/**
+ * Returns the maximum y-value for the rectangle.
+ * 
+ * @returns {number} The maximum y-value.
+ */
 jsfc.Rectangle.prototype.maxY = function() {
     return Math.max(this._y, this._y + this._height);
 };
@@ -156,6 +171,15 @@ jsfc.Rectangle.prototype.bounds = function() {
     return new jsfc.Rectangle(this._x, this._y, this._width, this._height);
 };
 
+/**
+ * Updates the coordinates and dimensions for the rectangle.
+ * 
+ * @param {number} x  the new x-coordinate.
+ * @param {number} y  the new y-coordinate.
+ * @param {number} w  the new width.
+ * @param {number} h  the new height.
+ * @returns {jsfc.Rectangle} Returns this rectangle (for chaining method calls).
+ */
 jsfc.Rectangle.prototype.set = function(x, y, w, h) {
     this._x = x;
     this._y = y;
