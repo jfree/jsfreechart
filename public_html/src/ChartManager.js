@@ -99,6 +99,14 @@ jsfc.ChartManager.prototype.getContext = function() {
     return this._ctx;
 };
 
+/**
+ * Adds a handler to the list of available live handlers.  Exactly ONE of the
+ * live handlers will be selected (on the basis of modifier keys) to handle
+ * a user interaction with the chart.
+ * 
+ * @param {!jsfc.MouseHandler} handler
+ * @returns {undefined}
+ */
 jsfc.ChartManager.prototype.addLiveHandler = function(handler) {
     this._availableLiveMouseHandlers.push(handler); 
 };
