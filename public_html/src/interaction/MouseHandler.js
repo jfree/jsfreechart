@@ -70,7 +70,7 @@ jsfc.MouseHandler.prototype.mouseOut = function(e) {
 };
 
 /**
- * Handles a mouse wheen event.
+ * Handles a mouse wheel event.
  * 
  * @param {MouseEvent} e  the mouse event.
  * 
