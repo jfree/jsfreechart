@@ -47,6 +47,7 @@ module.exports = function(grunt) {
 			  'public_html/src/renderer/category/BaseCategoryRenderer.js',
 			  'public_html/src/renderer/category/BarRenderer.js',
 			  'public_html/src/renderer/category/StackedBarRenderer.js',
+			  'public_html/src/renderer/StrokeSource.js',
               'public_html/src/renderer/*.js',
               'public_html/src/plot/*.js',
               'public_html/src/interaction/Modifier.js',

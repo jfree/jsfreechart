@@ -190,7 +190,8 @@ jsfc.Args.requireXYDataset = function(arg, label) {
  * Creates a new instance.
  * @class A formatter that converts a number into a string that shows the
  * date/time, based on the assumption that the numerical value is a count of 
- * the milliseconds elapsed since 1-Jan-1970.
+ * the milliseconds elapsed since 1-Jan-1970.  The current implementation is
+ * "quick and dirty". 
  * 
  * @constructor
  * @implements {jsfc.Format}
@@ -586,14 +587,26 @@ jsfc.Color.prototype.getRed = function() {
     return this._red;
 };
 
+/**
+ * Returns the green component for the color.
+ * @returns {number} The green component (in the range 0 to 255).
+ */
 jsfc.Color.prototype.getGreen = function() {
     return this._green;
 };
 
+/**
+ * Returns the blue component for the color.
+ * @returns {number} The blue component (in the range 0 to 255).
+ */
 jsfc.Color.prototype.getBlue = function() {
     return this._blue;
 };
 
+/**
+ * Returns the alpha (transparency) component for the color.
+ * @returns {number} The alpha component (in the range 0 to 255).
+ */
 jsfc.Color.prototype.getAlpha = function() {
     return this._alpha;
 };
@@ -2646,7 +2659,7 @@ jsfc.SVGContext2D.prototype.stroke = function() {
     var path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
     path.setAttribute("style", this._stroke.getStyleStr());
     path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "red");
+    path.setAttribute("stroke", this._lineColor.rgbaStr());
     path.setAttribute("d", this._pathStr);
     this.append(path);
 };
@@ -12746,6 +12759,8 @@ jsfc.SymbolAxis.prototype.ticks = function(tickSize, ctx, area, edge) {
 /**
  * Creates and returns a new color source.
  * 
+ * @param {jsfc.Color[]} colors An array of colors.
+ * 
  * @returns {jsfc.ColorSource}
  * 
  * @constructor
@@ -12757,10 +12772,23 @@ jsfc.ColorSource = function(colors) {
     this._colors = colors;
 };
 
+/**
+ * Returns a color.
+ * 
+ * @param {number} series  the series index.
+ * @param {number} item  the item index.
+ * 
+ * @returns {jsfc.Color} A color.
+ */
 jsfc.ColorSource.prototype.getColor = function(series, item) {
     return this._colors[series % this._colors.length];
 };
 
+/**
+ * Returns a color to represent the specified series in the legend.
+ * @param {number} series  the series index.
+ * @returns {jsfc.Color} A color to represent the series.
+ */
 jsfc.ColorSource.prototype.getLegendColor = function(series) {
     return this._colors[series % this._colors.length];
 };
@@ -13071,6 +13099,33 @@ jsfc.StackedBarRenderer.prototype.drawItem = function(ctx, dataArea, plot,
 };
 
 /**
+ * Creates and returns a new stroke source.
+ * 
+ * @param {jsfc.Stroke[]} strokes An array of strokes.
+ * 
+ * @returns {jsfc.StrokeSource}
+ * 
+ * @constructor
+ */
+jsfc.StrokeSource = function(strokes) {
+    if (!(this instanceof jsfc.StrokeSource)) {
+        throw new Error("Use 'new' for constructor.");
+    }
+    this._strokes = strokes;
+};
+
+/**
+ * Returns a stroke for the specified item.
+ * 
+ * @param {number} series  the series index.
+ * @param {number} item  the item index.
+ * 
+ * @returns {jsfc.Stroke} A stroke.
+ */
+jsfc.StrokeSource.prototype.getStroke = function(series, item) {
+    return this._strokes[series % this._strokes.length];
+};
+/**
  * A base object for XYRenderer implementations.
  * @constructor
  * @param {jsfc.BaseXYRenderer} [instance]  the instance.
@@ -13097,6 +13152,7 @@ jsfc.BaseXYRenderer.init = function(instance) {
     var fillColors = jsfc.Colors.colorsAsObjects(jsfc.Colors.fancyLight());
     instance._lineColorSource = new jsfc.ColorSource(lineColors);
     instance._fillColorSource = new jsfc.ColorSource(fillColors);
+    instance._strokeSource = new jsfc.StrokeSource([new jsfc.Stroke(2)]);
     instance._listeners = [];    
 };
 
@@ -13147,8 +13203,35 @@ jsfc.BaseXYRenderer.prototype.setFillColorSource = function(cs, notify) {
 };
 
 /**
- * Returns the number of passes required to render the data.  In this case,
- * one pass is required.
+ * Returns the object that determines the line stroke to be used by the
+ * renderer for a particular data item.
+ * 
+ * @returns {jsfc.StrokeSource}  the stroke source.
+ */
+jsfc.BaseXYRenderer.prototype.getStrokeSource = function() {
+    return this._strokeSource;
+};
+
+/**
+ * Sets the object that determines the line stroke to be used by the renderer
+ * for a particular data item and notifies listeners that the renderer has
+ * changed.
+ * 
+ * @param {jsfc.StrokeSource} ss  the stroke source.
+ * @param {boolean} [notify]
+ * @returns {undefined}
+ */
+jsfc.BaseXYRenderer.prototype.setStrokeSource = function(ss, notify) {
+    this._strokeSource = ss;
+    if (notify !== false) {
+        this.notifyListeners();
+    }
+};
+
+/**
+ * Returns the number of passes required to render the data.  Most renderers
+ * will make a single pass through the dataset, but there are cases where 
+ * multiple passes will be required.
  * 
  * @returns {!number} The number of passes required.
  */
@@ -13353,6 +13436,7 @@ jsfc.XYLineRenderer = function() {
         return new jsfc.XYLineRenderer();
     }
     jsfc.BaseXYRenderer.init(this);
+    this._drawSeriesAsPath = true;
 };
 
 jsfc.XYLineRenderer.prototype = new jsfc.BaseXYRenderer();
@@ -13369,7 +13453,50 @@ jsfc.XYLineRenderer.prototype.passCount = function() {
 };
 
 /**
- * Draws one data item in "immediate" mode.
+ * Draws a path for one series to the specified graphics context.
+ * 
+ * @param {jsfc.Context2D} ctx  the graphics context.
+ * @param {jsfc.Rectangle} dataArea
+ * @param {jsfc.XYPlot} plot
+ * @param {jsfc.XYDataset} dataset
+ * @param {number} seriesIndex
+ * @returns {undefined}
+ */
+jsfc.XYLineRenderer.prototype.drawSeries = function(ctx, dataArea, plot,
+        dataset, seriesIndex) {
+    var itemCount = dataset.itemCount(seriesIndex);
+    if (itemCount == 0) {
+        return;
+    }
+    var connect = false;
+    ctx.beginPath();
+    for (var i = 0; i < itemCount; i++) {
+        var x = dataset.x(seriesIndex, i);
+        var y = dataset.y(seriesIndex, i);
+        if (y === null) {
+            connect = false;
+            continue;
+        }
+
+        // convert these to target coordinates using the plot's axes
+        var xx = plot.getXAxis().valueToCoordinate(x, dataArea.x(), dataArea.x() 
+                + dataArea.width());
+        var yy = plot.getYAxis().valueToCoordinate(y, dataArea.y() 
+                + dataArea.height(), dataArea.y());
+        if (!connect) {
+            ctx.moveTo(xx, yy);
+            connect = true;
+        } else {
+            ctx.lineTo(xx, yy);
+        }
+    }
+    ctx.setLineColor(this._lineColorSource.getColor(seriesIndex, 0));
+    ctx.setLineStroke(this._strokeSource.getStroke(seriesIndex, 0));
+    ctx.stroke();
+};
+
+/**
+ * Draws one data item to the specified graphics context.
  * 
  * @param {jsfc.Context2D} ctx  the graphics context.
  * @param {jsfc.Rectangle} dataArea
@@ -13382,15 +13509,21 @@ jsfc.XYLineRenderer.prototype.passCount = function() {
 jsfc.XYLineRenderer.prototype.drawItem = function(ctx, dataArea, plot, 
         dataset, seriesIndex, itemIndex, pass) {
 
+    if (pass === 0 && this._drawSeriesAsPath) {
+        var itemCount = dataset.itemCount(seriesIndex);
+        if (itemIndex === itemCount - 1) {
+            this.drawSeries(ctx, dataArea, plot, dataset, seriesIndex);
+        }
+        return;
+    }
     var x = dataset.x(seriesIndex, itemIndex);
     var y = dataset.y(seriesIndex, itemIndex);
 
     // convert these to target coordinates using the plot's axes
     var xx = plot.getXAxis().valueToCoordinate(x, dataArea.x(), dataArea.x() 
             + dataArea.width());
-    var yy = plot.getYAxis().valueToCoordinate(y, dataArea.y() + dataArea.height(), 
-            dataArea.y());
-    
+    var yy = plot.getYAxis().valueToCoordinate(y, dataArea.y() 
+            + dataArea.height(), dataArea.y());
     
     if (pass === 0) { // in the FIRST pass draw lines
         if (itemIndex > 0) {
@@ -13402,10 +13535,10 @@ jsfc.XYLineRenderer.prototype.drawItem = function(ctx, dataArea, plot,
             var yy0 = plot.getYAxis().valueToCoordinate(y0, dataArea.y() 
                     + dataArea.height(), dataArea.y());
             // connect with a line
-            
             ctx.setLineColor(this._lineColorSource.getColor(seriesIndex, 
                     itemIndex));
-            ctx.setLineStroke(new jsfc.Stroke(3));
+            ctx.setLineStroke(this._strokeSource.getStroke(seriesIndex, 
+                    itemIndex));
             ctx.drawLine(xx0, yy0, xx, yy);
         }
     } else if (pass === 1) { // in the second pass draw shapes if there are any
