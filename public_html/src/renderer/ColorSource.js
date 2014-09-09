@@ -18,6 +18,8 @@
 /**
  * Creates and returns a new color source.
  * 
+ * @param {jsfc.Color[]} colors An array of colors.
+ * 
  * @returns {jsfc.ColorSource}
  * 
  * @constructor
@@ -29,10 +31,23 @@ jsfc.ColorSource = function(colors) {
     this._colors = colors;
 };
 
+/**
+ * Returns a color.
+ * 
+ * @param {number} series  the series index.
+ * @param {number} item  the item index.
+ * 
+ * @returns {jsfc.Color} A color.
+ */
 jsfc.ColorSource.prototype.getColor = function(series, item) {
     return this._colors[series % this._colors.length];
 };
 
+/**
+ * Returns a color to represent the specified series in the legend.
+ * @param {number} series  the series index.
+ * @returns {jsfc.Color} A color to represent the series.
+ */
 jsfc.ColorSource.prototype.getLegendColor = function(series) {
     return this._colors[series % this._colors.length];
 };
