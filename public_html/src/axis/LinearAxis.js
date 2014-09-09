@@ -784,8 +784,11 @@ jsfc.LinearAxis.prototype.configureAsYAxis = function(plot) {
     var dataset = plot.getDataset();
     if (this._autoRange && dataset) {
         var range = plot.getRenderer().calcYRange(dataset);
-        if (range.length() >= 0) {
+        if (range) {
             this._applyAutoRange(range.lowerBound(), range.upperBound());
+        } else {
+            this._applyAutoRange(this._defaultRange.lowerBound(), 
+                    this._defaultRange.upperBound());
         }
     }
     // auto-detect symbols in dataset

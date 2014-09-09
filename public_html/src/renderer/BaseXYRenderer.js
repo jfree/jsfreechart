@@ -129,9 +129,20 @@ jsfc.BaseXYRenderer.prototype.passCount = function() {
     return 1;
 };
 
+/**
+ * Returns the range required on the y-axis in order for this renderer to 
+ * fully display all the data items in the dataset.
+ * 
+ * @param {jsfc.StandardXYDataset} dataset  the dataset.
+ * @returns {jsfc.Range} The range (can be undefined if the dataset has no data
+ *         values).
+ */
 jsfc.BaseXYRenderer.prototype.calcYRange = function(dataset) {
     var bounds = jsfc.XYDatasetUtils.ybounds(dataset);
-    return new jsfc.Range(bounds[0], bounds[1]);
+    if (bounds[1] >= bounds[0]) {
+        return new jsfc.Range(bounds[0], bounds[1]);
+    }
+    return;
 };
 
 /**
