@@ -534,7 +534,7 @@ jsfc.SVGContext2D.prototype.stroke = function() {
     var path = document.createElementNS("http://www.w3.org/2000/svg", 'path');
     path.setAttribute("style", this._stroke.getStyleStr());
     path.setAttribute("fill", "none");
-    path.setAttribute("stroke", "red");
+    path.setAttribute("stroke", this._lineColor.rgbaStr());
     path.setAttribute("d", this._pathStr);
     this.append(path);
 };
