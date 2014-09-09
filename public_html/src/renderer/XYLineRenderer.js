@@ -27,6 +27,7 @@ jsfc.XYLineRenderer = function() {
         return new jsfc.XYLineRenderer();
     }
     jsfc.BaseXYRenderer.init(this);
+    this._drawSeriesAsPath = false;
 };
 
 jsfc.XYLineRenderer.prototype = new jsfc.BaseXYRenderer();
@@ -56,15 +57,21 @@ jsfc.XYLineRenderer.prototype.passCount = function() {
 jsfc.XYLineRenderer.prototype.drawItem = function(ctx, dataArea, plot, 
         dataset, seriesIndex, itemIndex, pass) {
 
+    if (pass === 0 && this._drawSeriesAsPath) {
+        var itemCount = dataset.itemCount(seriesIndex);
+        if (itemIndex === itemCount - 1) {
+            // draw the series as a path
+        }
+        return;
+    }
     var x = dataset.x(seriesIndex, itemIndex);
     var y = dataset.y(seriesIndex, itemIndex);
 
     // convert these to target coordinates using the plot's axes
     var xx = plot.getXAxis().valueToCoordinate(x, dataArea.x(), dataArea.x() 
             + dataArea.width());
-    var yy = plot.getYAxis().valueToCoordinate(y, dataArea.y() + dataArea.height(), 
-            dataArea.y());
-    
+    var yy = plot.getYAxis().valueToCoordinate(y, dataArea.y() 
+            + dataArea.height(), dataArea.y());
     
     if (pass === 0) { // in the FIRST pass draw lines
         if (itemIndex > 0) {
@@ -76,10 +83,10 @@ jsfc.XYLineRenderer.prototype.drawItem = function(ctx, dataArea, plot,
             var yy0 = plot.getYAxis().valueToCoordinate(y0, dataArea.y() 
                     + dataArea.height(), dataArea.y());
             // connect with a line
-            
             ctx.setLineColor(this._lineColorSource.getColor(seriesIndex, 
                     itemIndex));
-            ctx.setLineStroke(new jsfc.Stroke(3));
+            ctx.setLineStroke(this._strokeSource.getStroke(seriesIndex, 
+                    itemIndex));
             ctx.drawLine(xx0, yy0, xx, yy);
         }
     } else if (pass === 1) { // in the second pass draw shapes if there are any
