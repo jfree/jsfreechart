@@ -51,14 +51,26 @@ jsfc.Color.prototype.getRed = function() {
     return this._red;
 };
 
+/**
+ * Returns the green component for the color.
+ * @returns {number} The green component (in the range 0 to 255).
+ */
 jsfc.Color.prototype.getGreen = function() {
     return this._green;
 };
 
+/**
+ * Returns the blue component for the color.
+ * @returns {number} The blue component (in the range 0 to 255).
+ */
 jsfc.Color.prototype.getBlue = function() {
     return this._blue;
 };
 
+/**
+ * Returns the alpha (transparency) component for the color.
+ * @returns {number} The alpha component (in the range 0 to 255).
+ */
 jsfc.Color.prototype.getAlpha = function() {
     return this._alpha;
 };
