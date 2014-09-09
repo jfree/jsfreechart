@@ -42,6 +42,7 @@ jsfc.BaseXYRenderer.init = function(instance) {
     var fillColors = jsfc.Colors.colorsAsObjects(jsfc.Colors.fancyLight());
     instance._lineColorSource = new jsfc.ColorSource(lineColors);
     instance._fillColorSource = new jsfc.ColorSource(fillColors);
+    instance._strokeSource = new jsfc.StrokeSource([new jsfc.Stroke(2)]);
     instance._listeners = [];    
 };
 
@@ -92,8 +93,35 @@ jsfc.BaseXYRenderer.prototype.setFillColorSource = function(cs, notify) {
 };
 
 /**
- * Returns the number of passes required to render the data.  In this case,
- * one pass is required.
+ * Returns the object that determines the line stroke to be used by the
+ * renderer for a particular data item.
+ * 
+ * @returns {jsfc.StrokeSource}  the stroke source.
+ */
+jsfc.BaseXYRenderer.prototype.getStrokeSource = function() {
+    return this._strokeSource;
+};
+
+/**
+ * Sets the object that determines the line stroke to be used by the renderer
+ * for a particular data item and notifies listeners that the renderer has
+ * changed.
+ * 
+ * @param {jsfc.StrokeSource} ss  the stroke source.
+ * @param {boolean} [notify]
+ * @returns {undefined}
+ */
+jsfc.BaseXYRenderer.prototype.setStrokeSource = function(ss, notify) {
+    this._strokeSource = ss;
+    if (notify !== false) {
+        this.notifyListeners();
+    }
+};
+
+/**
+ * Returns the number of passes required to render the data.  Most renderers
+ * will make a single pass through the dataset, but there are cases where 
+ * multiple passes will be required.
  * 
  * @returns {!number} The number of passes required.
  */

@@ -16,38 +16,29 @@
  */
 
 /**
- * Creates and returns a new color source.
+ * Creates and returns a new stroke source.
  * 
- * @param {jsfc.Color[]} colors An array of colors.
+ * @param {jsfc.Stroke[]} strokes An array of strokes.
  * 
- * @returns {jsfc.ColorSource}
+ * @returns {jsfc.StrokeSource}
  * 
  * @constructor
  */
-jsfc.ColorSource = function(colors) {
-    if (!(this instanceof jsfc.ColorSource)) {
+jsfc.StrokeSource = function(strokes) {
+    if (!(this instanceof jsfc.StrokeSource)) {
         throw new Error("Use 'new' for constructor.");
     }
-    this._colors = colors;
+    this._strokes = strokes;
 };
 
 /**
- * Returns a color.
+ * Returns a stroke for the specified item.
  * 
  * @param {number} series  the series index.
  * @param {number} item  the item index.
  * 
- * @returns {jsfc.Color} A color.
+ * @returns {jsfc.Stroke} A stroke.
  */
-jsfc.ColorSource.prototype.getColor = function(series, item) {
-    return this._colors[series % this._colors.length];
-};
-
-/**
- * Returns a color to represent the specified series in the legend.
- * @param {number} series  the series index.
- * @returns {jsfc.Color} A color to represent the series.
- */
-jsfc.ColorSource.prototype.getLegendColor = function(series) {
-    return this._colors[series % this._colors.length];
+jsfc.StrokeSource.prototype.getStroke = function(series, item) {
+    return this._strokes[series % this._strokes.length];
 };
