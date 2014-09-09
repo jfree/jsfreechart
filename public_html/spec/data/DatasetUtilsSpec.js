@@ -16,6 +16,8 @@
  */
 
 // some tests for the DatasetUtils object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("DatasetUtils", function() {
       
     describe("Generally for DatasetUtils.extractStackBaseValues()", function() {

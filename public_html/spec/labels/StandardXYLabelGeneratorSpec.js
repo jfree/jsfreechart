@@ -16,6 +16,8 @@
  */
 
 // some tests for the StandardXYLabelGenerator object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("StandardXYLabelGenerator", function() {
     
   describe("A default StandardXYLabelGenerator instance", function() {

@@ -18,6 +18,8 @@
 /**
  * Some tests for the Offset2D object.
  */
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+ 
 describe("Offset2D", function() {
     
     describe("Creating a new instance", function() {

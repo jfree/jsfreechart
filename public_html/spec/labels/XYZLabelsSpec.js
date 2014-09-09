@@ -16,6 +16,8 @@
  */
 
 // some tests for the XYZLabels object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("XYZLabels", function() {
     
   describe("A default XYZLabels instance", function() {

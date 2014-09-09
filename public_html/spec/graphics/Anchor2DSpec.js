@@ -19,6 +19,8 @@
  * Some tests for the Anchor2D object.
  * @returns {undefined}
  */
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+ 
 describe("Anchor2D", function() {
     
     describe("Creating a new instance", function() {

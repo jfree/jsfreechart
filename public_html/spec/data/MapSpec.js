@@ -16,6 +16,8 @@
  */
 
 // some tests for the Map object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("Map", function() {
     
     describe("Regarding the constructor", function() {

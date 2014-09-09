@@ -16,6 +16,8 @@
  */
 
 // tests for the KeyedValues3DDataset object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("KeyedValues3DDataset", function() {
     
     describe("When a new KeyedValues3DDataset is created", function() {

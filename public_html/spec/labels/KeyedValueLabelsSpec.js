@@ -16,6 +16,8 @@
  */
 
 // some tests for the KeyedValueLabels object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("KeyedValueLabels", function() {
     
   describe("A default KeyedValueLabels instance", function() {

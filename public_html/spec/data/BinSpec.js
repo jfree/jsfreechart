@@ -16,6 +16,8 @@
  */
 
 // some tests for the Bin object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("Bin", function() {
     
     describe("Regarding the constructor", function() {

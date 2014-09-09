@@ -16,6 +16,8 @@
  */
 
 // some tests for the NumberFormat object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("NumberFormat", function() {
     
     describe("General", function() {

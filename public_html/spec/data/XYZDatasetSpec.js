@@ -16,6 +16,8 @@
  */
 
 // some tests for the XYZDataset object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("XYZDataset", function() {
     
   describe("When a new XYZDataset is created", function() {

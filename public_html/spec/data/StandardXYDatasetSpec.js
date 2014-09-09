@@ -16,6 +16,8 @@
  */
 
 // some tests for the StandardXYDataset object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("StandardXYDataset", function() {
     
     describe("When a new StandardXYDataset is created", function() {

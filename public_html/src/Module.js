@@ -15,24 +15,4 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/**
- * Some tests for the Point2D object.
- */
-if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
-
-describe("Point2D", function() {
-    
-    describe("Creating a new instance", function() {
-        it("Check the arguments when creating the object", function() {
-            var p = new jsfc.Point2D(1, 2);
-            expect(p.x()).toEqual(1);
-            expect(p.y()).toEqual(2);
-            // dim is frozen
-            p._x = 99;
-            p._y = 98;
-            expect(p.x()).toEqual(1);
-            expect(p.y()).toEqual(2);
-        });
-    });    
-    
-});
+if (typeof define === "function" && define.amd) define(jsfc); else if (typeof module === "object" && module.exports) module.exports = jsfc;

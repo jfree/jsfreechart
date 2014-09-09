@@ -18,6 +18,8 @@
 /**
  * Some tests for the Insets object.
  */
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+ 
 describe("Insets", function() {
     
     describe("Creating a new instance", function() {

@@ -18,6 +18,8 @@
 /**
  * Some tests for the Polygon object.
  */
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("Polygon", function() {
     
     describe("One can check if a point is contained within a polygon", function() {

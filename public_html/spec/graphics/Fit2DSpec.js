@@ -19,6 +19,8 @@
  * Some tests for the Fit2D object.
  * @returns {undefined}
  */
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+ 
 describe("Fit2D", function() {
     
     describe("Creating a new instance", function() {

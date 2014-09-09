@@ -16,6 +16,8 @@
  */
 
 // tests for the KeyedValues2DDataset object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("KeyedValues2DDataset", function() {
     
     describe("When a new KeyedValues2DDataset is created", function() {

@@ -16,6 +16,8 @@
  */
 
 // some tests for the RefPt2D object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("TextAnchor", function() {
     
     describe("Utility functions that determine position", function() {

@@ -16,6 +16,8 @@
  */
 
 // some tests for the HistogramDataset object
+if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
+
 describe("HistogramDataset", function() {
     
     describe("When a new HistogramDataset is created", function() {
