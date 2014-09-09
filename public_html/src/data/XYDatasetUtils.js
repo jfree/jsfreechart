@@ -38,7 +38,8 @@ jsfc.XYDatasetUtils.itemCount = function(dataset) {
 
 /**
  * Returns [ymin, ymax] where ymin is the smallest value appearing in the 
- * dataset and ymax is the largest value.
+ * dataset and ymax is the largest value.  If the dataset doesn't contain any
+ * data, this method will return [POSITIVE_INFINITY, NEGATIVE_INFINITY].
  * 
  * @param {jsfc.XYDataset} dataset  the source dataset.
  * @param {number} [baseline]  the baseline value.
