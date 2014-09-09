@@ -19,7 +19,8 @@
  * Creates a new instance.
  * @class A formatter that converts a number into a string that shows the
  * date/time, based on the assumption that the numerical value is a count of 
- * the milliseconds elapsed since 1-Jan-1970.
+ * the milliseconds elapsed since 1-Jan-1970.  The current implementation is
+ * "quick and dirty". 
  * 
  * @constructor
  * @implements {jsfc.Format}
