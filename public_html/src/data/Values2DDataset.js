@@ -58,6 +58,15 @@ jsfc.Values2DDataset.prototype.columnCount = function() {
 };
 
 /**
+ * Returns true if the dataset has zero rows and zero columns, and false
+ * otherwise.
+ * 
+ * @returns {!boolean} A boolean.
+ */
+jsfc.Values2DDataset.prototype.isEmpty = function() {  
+};
+
+/**
  * Returns the data value in the cell with the specified row and column indices.
  * 
  * @param {!number} r  the row index.
@@ -130,6 +139,18 @@ jsfc.Values2DDataset.prototype.columnIndex = function(key) {
  * @returns {number} The data value.
  */
 jsfc.Values2DDataset.prototype.valueByKey = function(rowKey, columnKey) {
+};
+
+jsfc.Values2DDataset.prototype.getProperty = function(key) {
+};
+
+jsfc.Values2DDataset.prototype.setProperty = function(key, value, notify) {
+};
+
+jsfc.Values2DDataset.prototype.getPropertyKeys = function() {
+};
+
+jsfc.Values2DDataset.prototype.clearProperties = function(notify) {
 };
     
 /**
