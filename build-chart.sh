@@ -77,6 +77,7 @@ java -jar ~/jars/compiler.jar --warning_level VERBOSE --compilation_level SIMPLE
 --js public_html/src/axis/NumberTickSelector.js \
 --js public_html/src/axis/TickMark.js \
 --js public_html/src/renderer/ColorSource.js \
+--js public_html/src/renderer/StrokeSource.js \
 --js public_html/src/renderer/category/CategoryRenderer.js \
 --js public_html/src/renderer/category/BaseCategoryRenderer.js \
 --js public_html/src/renderer/category/BarRenderer.js \
