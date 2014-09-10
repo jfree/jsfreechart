@@ -34,6 +34,9 @@ describe("KeyedValues2DDataset", function() {
         it("isEmpty() should return true.", function() {
             expect(dataset.isEmpty()).toEqual(true);
         });
+        it("it should have no dataset-level properties", function() {
+            expect(dataset.getPropertyKeys()).toEqual([]);
+        });
     });
   
     describe("After one item is added to the dataset", function() {
@@ -286,6 +289,39 @@ describe("KeyedValues2DDataset", function() {
             dataset.clearSelection("hilite2");
             expect(dataset.isSelected("hilite1", "R2", "C3")).toBe(true);            
             expect(dataset.isSelected("hilite2", "R2", "C3")).toBe(false);            
+        });
+    });
+
+    describe("Regarding the insertRow() method", function() {
+        beforeEach(function() {
+            dataset = new jsfc.KeyedValues2DDataset();
+            dataset.add("R1", "C1", 1.0);
+            dataset.add("R2", "C1", 2.0);
+            dataset.add("R3", "C1", 3.0);
+            dataset.add("R1", "C2", 1.1);
+            dataset.add("R2", "C2", 2.2);
+            dataset.add("R3", "C2", 3.3);
+        });
+        it("it is possible to insert a row at the start", function() {
+            dataset.insertRow("I1", 0, false);
+            expect(dataset.rowKeys()).toEqual(["I1", "R1", "R2", "R3"]);
+            expect(dataset.valueByKey("I1", "C1")).toBe(undefined);
+            expect(dataset.valueByKey("I1", "C2")).toBe(undefined);
+            expect(dataset.rowIndex("I1")).toEqual(0);
+        });
+        it("it is possible to insert a row in the middle", function() {
+            dataset.insertRow("I1", 1, false);
+            expect(dataset.rowKeys()).toEqual(["R1", "I1", "R2", "R3"]);
+            expect(dataset.valueByKey("I1", "C1")).toBe(undefined);
+            expect(dataset.valueByKey("I1", "C2")).toBe(undefined);
+            expect(dataset.rowIndex("I1")).toEqual(1);
+        });
+        it("it is possible to insert a row at the end", function() {
+            dataset.insertRow("I1", 3, false);
+            expect(dataset.rowKeys()).toEqual(["R1", "R2", "R3", "I1"]);
+            expect(dataset.valueByKey("I1", "C1")).toBe(undefined);
+            expect(dataset.valueByKey("I1", "C2")).toBe(undefined);
+            expect(dataset.rowIndex("I1")).toEqual(3);
         });
     });
 

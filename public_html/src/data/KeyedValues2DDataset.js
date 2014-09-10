@@ -130,13 +130,37 @@ jsfc.KeyedValues2DDataset.prototype.add = function(rowKey, columnKey, value,
 };
 
 /**
+ * Inserts a new row in the dataset, containing undefined values, at the 
+ * specified index and assigns the supplied rowKey.
+ * 
+ * @param {!string} rowKey  the row key (should be a key that does not already
+ *         appear in the list of row keys for the dataset).
+ * @param {boolean} [notify]  notify listeners? (defaults to true).
+ * @returns {undefined}
+ */
+jsfc.KeyedValues2DDataset.prototype.insertRow = function(rowKey, rowIndex, 
+        notify) {
+    if (this.rowIndex(rowKey) >= 0) {
+        throw new Error("The 'rowKey' (" + rowKey 
+                + ") already exists in the dataset.");
+    }
+    var items = jsfc.Utils.makeArrayOf(undefined, this.columnCount());
+    this.data.rows.splice(rowIndex, 0, {"key": rowKey, "values": items});
+    this._rowKeyToIndexMap = this._buildKeyMap(this.rowKeys());
+    if (notify !== false) {
+        this.notifyListeners();
+    }
+};
+        
+/**
  * Parses the supplied JSON-format string to populate the 'data' attribute
  * for this dataset.
  * 
  * @param {string} jsonStr  a string in JSON format.
  * @param {boolean} [notify]  notify listeners (optional, defaults to true).
  * 
- * @returns {jsfc.KeyedValues2DDataset} This dataset (for chaining method calls).
+ * @returns {jsfc.KeyedValues2DDataset} This dataset (for chaining method 
+ *         calls).
  */
 jsfc.KeyedValues2DDataset.prototype.parse = function(jsonStr, notify) {
     this.load(JSON.parse(jsonStr));
