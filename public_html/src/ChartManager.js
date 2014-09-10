@@ -183,6 +183,7 @@ jsfc.ChartManager.prototype.removeAuxiliaryHandler = function(handler) {
 jsfc.ChartManager.prototype.refreshDisplay = function() {
     var size = this._chart.getSize();
     var bounds = new jsfc.Rectangle(0, 0, size.width(), size.height());
+    this._ctx.setHint("size", size);
     this._ctx.clear();
     this._chart.draw(this._ctx, bounds);
 };

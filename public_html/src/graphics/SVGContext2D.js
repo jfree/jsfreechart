@@ -98,7 +98,12 @@ jsfc.SVGContext2D = function(svg) {
 jsfc.SVGContext2D.prototype = new jsfc.BaseContext2D();
 
 /**
- * Sets a rendering hint.
+ * Sets a rendering hint.  The hints recognised by this context include:
+ * 
+ * - "size" : expects a value of jsfc.Dimension.  When this hint is received it
+ *   is used to immediately update the width and height of the SVG element.
+ * - "layer" : expects a string that identifies a layer and switches to 
+ *   (or creates) that layer.
  * 
  * @param {!string} key  the hint key.
  * @param {*} value  the hint value.
@@ -112,6 +117,11 @@ jsfc.SVGContext2D.prototype.setHint = function(key, value) {
             this._addLayer(layer);
         } 
         this._currentLayer = layer;
+        return;
+    }
+    if (key === "size") {
+        this.svg.setAttribute("width", value.width() + "px");
+        this.svg.setAttribute("height", value.height() + "px");
         return;
     }
     this._hints[key] = value;  
@@ -252,7 +262,7 @@ jsfc.SVGContext2D.prototype.endGroup = function() {
 };
 
 /**
- * Clears all the content of the SVG element.
+ * Clears all the content of the current layer in the SVG element.
  * 
  * @returns {undefined}
  */
@@ -327,7 +337,7 @@ jsfc.SVGContext2D.prototype.drawRect = function(x, y, w, h) {
 
 jsfc.SVGContext2D.prototype._applyStrokeColor = function(element, color) {
     element.setAttribute("stroke", color.rgbStr());
-    if (color.getAlpha() < 1) {
+    if (color.getAlpha() < 255) {
         element.setAttribute("stroke-opacity", 
                 this._geomDP(color.getAlpha() / 255));
     }

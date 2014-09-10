@@ -114,7 +114,7 @@ jsfc.Context2D.prototype.fillRect = function(x, y, width, height) {
 };
 
 /**
- * Draws a circle.
+ * Draws a circle with radius r at a location (cx, cy).
  * 
  * @param {!number} cx  the x-coordinate for the center point.
  * @param {!number} cy  the y-coordinate for the center point.
@@ -291,4 +291,12 @@ jsfc.Context2D.prototype.save = function() {
 };
 
 jsfc.Context2D.prototype.restore = function() {
+};
+
+/**
+ * Clears the content of the target element.
+ * 
+ * @returns {undefined}
+ */
+jsfc.Context2D.prototype.clear = function() {
 };
