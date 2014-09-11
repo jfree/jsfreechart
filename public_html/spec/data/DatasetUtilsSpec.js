@@ -15,9 +15,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-// some tests for the DatasetUtils object
+// for running tests via Grunt (with Node)
 if (typeof module === "object" && module.exports) var jsfc = require("../../lib/jsfreechart.js");
 
+// some tests for the DatasetUtils object
 describe("DatasetUtils", function() {
       
     describe("Generally for DatasetUtils.extractStackBaseValues()", function() {
@@ -61,6 +62,16 @@ describe("DatasetUtils", function() {
             expect(d.x(0, 1)).toEqual(4.0);
             expect(d.y(0, 1)).toEqual(3.0);
         });
+
+        it("Verify that selections carry over", function() {
+            dataset.select("select", "R1", "C2");
+            var d = jsfc.DatasetUtils.extractXYDatasetFromColumns2D(dataset, 
+                    "C1", "C2", "S1");
+            var itemKey0 = d.itemKey(0, 0);
+            expect(d.isSelected("select", "S1", itemKey0));
+            var itemKey1 = d.itemKey(0, 1);
+            expect(!d.isSelected("select", "S1", itemKey1));
+        });
         
         it("Verify that properties are extracted also", function() {
             dataset.setItemProperty("R1", "C2", "color", "red");
@@ -97,6 +108,16 @@ describe("DatasetUtils", function() {
             expect(d.y(0, 1)).toEqual(2.0);
         });
         
+        it("Verify that selections carry over", function() {
+            dataset.select("select", "R2", "C2");
+            var d = jsfc.DatasetUtils.extractXYDatasetFromRows2D(dataset, 
+                    "R1", "R2", "S1");
+            var itemKey0 = d.itemKey(0, 0);
+            expect(d.isSelected("select", "S1",itemKey0));
+            var itemKey1 = d.itemKey(0, 1);
+            expect(!d.isSelected("select", "S1", itemKey1));
+        });
+
         it("Verify that properties are extracted also", function() {
             dataset.setItemProperty("R1", "C2", "color", "red");
             dataset.setItemProperty("R1", "C1", "color", "blue");
