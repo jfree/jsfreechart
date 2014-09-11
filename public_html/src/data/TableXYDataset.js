@@ -51,16 +51,18 @@ jsfc.TableXYDataset = function(source, xcol, ycols) {
         if (c < 0) {
             throw new Error("The column 'xcol' (" + xcol + ") is not present.");
         }
-        var xsymbols = source.getColumnProperty(xcol, "symbols");
-        if (xsymbols) {
+        var symbols = source.getColumnProperty(xcol, "symbols");
+        if (symbols) {
             var xsyms = [];
             for (var r = 0; r < source.rowCount(); r++) {
-                var sym = {};
-                sym.value = r;
-                sym.symbol = xsymbols[source.valueByIndex(r, c)].symbol;
-                xsyms.push(sym);
+                var s = {};
+                s.value = r;
+                s.symbol = symbols[source.valueByIndex(r, c)].symbol;
+                xsyms.push(s);
             }
             source.setProperty("x-symbols", xsyms);
+        } else {
+            source.setProperty("x-symbols", null);
         }
     }
     
