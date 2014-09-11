@@ -1,0 +1,157 @@
+    <!DOCTYPE html>
+<html>
+    <head>
+        <title>A Line Chart using TableXYDataset</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+        <script type="text/javascript" src="src/JSFreeChart.js"></script>
+        <script type="text/javascript" src="src/Charts.js"></script>
+        <script type="text/javascript" src="src/ChartManager.js"></script>
+        <script type="text/javascript" src="src/Args.js"></script>
+        <script type="text/javascript" src="src/Utils.js"></script>
+        <script type="text/javascript" src="src/axis/AxisSpace.js"></script>
+        <script type="text/javascript" src="src/axis/BaseValueAxis.js"></script>
+        <script type="text/javascript" src="src/axis/LabelOrientation.js"></script>
+        <script type="text/javascript" src="src/axis/NumberTickSelector.js"></script>
+        <script type="text/javascript" src="src/axis/TickMark.js"></script>
+        <script type="text/javascript" src="src/data/Map.js"></script>
+        <script type="text/javascript" src="src/data/DatasetUtils.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues2DDataset.js"></script>
+        <script type="text/javascript" src="src/data/XYDatasetUtils.js"></script>
+        <script type="text/javascript" src="src/data/Range.js"></script>
+        <script type="text/javascript" src="src/data/KeyedValues2DDataset.js"></script>
+        <script type="text/javascript" src="src/data/TableXYDataset.js"></script>
+        <script type="text/javascript" src="src/graphics/Anchor2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Color.js"></script>
+        <script type="text/javascript" src="src/Colors.js"></script>
+        <script type="text/javascript" src="src/graphics/Dimension.js"></script>
+        <script type="text/javascript" src="src/graphics/Fit2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Font.js"></script>
+        <script type="text/javascript" src="src/graphics/HAlign.js"></script>
+        <script type="text/javascript" src="src/graphics/Insets.js"></script>
+        <script type="text/javascript" src="src/graphics/LineCap.js"></script>
+        <script type="text/javascript" src="src/graphics/LineJoin.js"></script>
+        <script type="text/javascript" src="src/graphics/Offset2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Point2D.js"></script>
+        <script type="text/javascript" src="src/graphics/RefPt2D.js"></script>
+        <script type="text/javascript" src="src/graphics/Shape.js"></script>
+        <script type="text/javascript" src="src/graphics/Stroke.js"></script>
+        <script type="text/javascript" src="src/graphics/Rectangle.js"></script>
+        <script type="text/javascript" src="src/graphics/RectangleEdge.js"></script>
+        <script type="text/javascript" src="src/graphics/Scale2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGLayer.js"></script>
+        <script type="text/javascript" src="src/graphics/BaseContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/SVGContext2D.js"></script>
+        <script type="text/javascript" src="src/graphics/TextAnchor.js"></script>
+        <script type="text/javascript" src="src/graphics/Transform.js"></script>
+        <script type="text/javascript" src="src/interaction/Modifier.js"></script>
+        <script type="text/javascript" src="src/interaction/BaseMouseHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
+        <script type="text/javascript" src="src/legend/LegendBuilder.js"></script>
+        <script type="text/javascript" src="src/legend/LegendItemInfo.js"></script>
+        <script type="text/javascript" src="src/legend/StandardLegendBuilder.js"></script>
+        <script type="text/javascript" src="src/axis/LinearAxis.js"></script>
+        <script type="text/javascript" src="src/labels/StandardXYLabelGenerator.js"></script>
+        <script type="text/javascript" src="src/plot/XYPlot.js"></script>
+        <script type="text/javascript" src="src/renderer/BaseXYRenderer.js"></script>
+        <script type="text/javascript" src="src/renderer/ColorSource.js"></script>
+        <script type="text/javascript" src="src/renderer/StrokeSource.js"></script>
+        <script type="text/javascript" src="src/renderer/ScatterRenderer.js"></script>
+        <script type="text/javascript" src="src/renderer/XYLineRenderer.js"></script>
+        <script type="text/javascript" src="src/table/BaseElement.js"></script>
+        <script type="text/javascript" src="src/table/FlowElement.js"></script>
+        <script type="text/javascript" src="src/table/GridElement.js"></script>
+        <script type="text/javascript" src="src/table/RectangleElement.js"></script>
+        <script type="text/javascript" src="src/table/StandardRectanglePainter.js"></script>
+        <script type="text/javascript" src="src/table/TextElement.js"></script>
+        <script type="text/javascript" src="src/util/DateFormat.js"></script>
+        <script type="text/javascript" src="src/util/NumberFormat.js"></script>
+        <script type="text/javascript" src="src/Chart.js"></script>
+        <style>       
+            .chart_container { background-color:yellow; height: 100%; width: 100%; }
+            body { margin: 0; border: 2px; padding: 5px; }
+            .row, .col { overflow: hidden; position: absolute; }
+            .row { left: 0; right: 0; }
+            .col { top: 0; bottom: 0; }
+            .scroll-x { overflow-x: none; }
+            .scroll-y { overflow-y: none; }
+
+            .header.row { height: 105px; top: 0; }
+            .body.row { background-color:red; top: 105px; bottom: 50px;}
+            .footer.row { height: 50px; bottom: 0; }
+        </style>
+    </head>
+    <body onload="installChart();">
+        <script type="application/javascript">
+            function installChart() {
+                // create a table that looks like this
+                //        X   Y1   Y2   Y3
+                // R1:  1.0  1.1  2.2  3.3
+                // R2:  2.0  5.0  4.0  3.0
+                // R3:  4.0  7.0  4.0  9.0
+                var source = new jsfc.KeyedValues2DDataset();
+                source.add("R1", "X", 1.0);
+                source.add("R1", "Y1", 1.1);
+                source.add("R1", "Y2", 2.2);
+                source.add("R1", "Y3", 3.3);
+                source.add("R2", "X", 2.0);
+                source.add("R2", "Y1", 5.0);
+                source.add("R2", "Y2", 4.0);
+                source.add("R2", "Y3", 3.0);
+                source.add("R3", "X", 4.0);
+                source.add("R3", "Y1", 7.0);
+                source.add("R3", "Y2", 4.0);
+                source.add("R3", "Y3", 9.0);
+              
+                // wrap the source data to provide an XYDataset with 2 series
+                // using x-values from column "X" and y-values from "Y1" 
+                // and "Y3"
+                var dataset = new jsfc.TableXYDataset(source, "X", ["Y1", "Y3"]);
+                
+                var plot = new jsfc.XYPlot(dataset);
+              
+                var renderer = new jsfc.XYLineRenderer(plot);
+                plot.setRenderer(renderer);
+                plot.setAxisOffsets(new jsfc.Insets(4, 4, 4, 4));
+                var chart = new jsfc.Chart(plot);
+                var titleAnchor = new jsfc.Anchor2D(jsfc.RefPt2D.TOP_LEFT);
+                chart.setTitleAnchor(titleAnchor);
+                chart.setTitle("Line Chart Demo", "Using TableXYDataset", 
+                       titleAnchor);    
+                chart.setSize(600, 400);
+                var svg = document.getElementById("chart_svg");
+                chartManager = new jsfc.ChartManager(svg, chart);
+                chartManager.refreshDisplay();
+                var win = document.defaultView || document.parentWindow;
+                win.onresize = resize;
+                
+            };
+            function resize(evt) {
+                var element = document.getElementById("line_chart_1");
+                var w = Math.max(300, element.clientWidth);
+                var h = Math.max(200, element.clientHeight);
+                chartManager.getChart().setSize(w, h);
+                chartManager.refreshDisplay();
+            }
+            
+
+        </script>   
+        <div class="header row">
+            <h4>Resizing Chart Demo:</h4>
+            <p>In this demo we have a chart that resizes according to the resizing
+                of its container.</p>
+        </div>
+        <div class="body row scroll-x scroll-y">
+            <div id="line_chart_1" class="chart_container">
+                <svg id="chart_svg" width="100%" height="100%"></svg>                
+            </div>
+        </div>
+        <div class="footer row">
+            <p id="debug">This is a footer, part of the HTML not the chart.</p>
+        </div>
+    </body>
+</html>
+
