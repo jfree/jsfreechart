@@ -40,10 +40,29 @@ jsfc.TableXYDataset = function(source, xcol, ycols) {
     // array of strings).
     this._source = source;
     
-    if (this._source.columnIndex(xcol) < 0) {
-        throw new Error("The column 'xcol' (" + xcol + ") is not present.");
-    }
+    // if xcol is null the x-values returned are the row indices and we
+    // set up symbols from the row keys
     this._xcol = xcol;
+    if (xcol === null) {
+        var xsyms = this._extractRowSymbols(source);
+        source.setProperty("x-symbols", xsyms);
+    } else {
+        var c = this._source.columnIndex(xcol);
+        if (c < 0) {
+            throw new Error("The column 'xcol' (" + xcol + ") is not present.");
+        }
+        var xsymbols = source.getColumnProperty(xcol, "symbols");
+        if (xsymbols) {
+            var xsyms = [];
+            for (var r = 0; r < source.rowCount(); r++) {
+                var sym = {};
+                sym.value = r;
+                sym.symbol = xsymbols[source.valueByIndex(r, c)].symbol;
+                xsyms.push(sym);
+            }
+            source.setProperty("x-symbols", xsyms);
+        }
+    }
     
     ycols.forEach(function(entry) {
         if (source.columnIndex(entry) < 0) {
@@ -53,6 +72,24 @@ jsfc.TableXYDataset = function(source, xcol, ycols) {
     this._ycols = ycols;
     this._nextRowID = 0;
     this._listeners = [];
+};
+
+/**
+ * Returns an array of symbols based on the row keys from the specified 
+ * dataset.
+ * 
+ * @param {jsfc.Values2DDataset} key
+ * @returns {Array} An array of symbol objects.
+ */
+jsfc.TableXYDataset.prototype._extractRowSymbols = function(source) {
+    var result = [];
+    for (var r = 0; r < source.rowCount(); r++) {
+        var sym = {};
+        sym.value = r;
+        sym.symbol = source.rowKey(r);
+        result.push(sym);
+    }
+    return result;
 };
 
 /**
@@ -184,6 +221,14 @@ jsfc.TableXYDataset.prototype.itemIndex = function(seriesKey, itemKey) {
  * @returns {number} The x-value.
  */
 jsfc.TableXYDataset.prototype.x = function(seriesIndex, itemIndex) {
+    if (this._xcol === null) {
+        return itemIndex;
+    }
+    // when there are symbols defined for the axis, we want this dataset
+    // to return ordinal x-values
+    if (this.getProperty("x-symbols")) {
+        return itemIndex;
+    }
     var col = this._source.columnIndex(this._xcol);
     return this._source.valueByIndex(itemIndex, col);
 };
