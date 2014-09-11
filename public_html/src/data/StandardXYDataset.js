@@ -777,7 +777,8 @@ jsfc.StandardXYDataset.prototype.isSelected = function(selectionId, seriesKey,
  * @param {boolean} [notify]  notify listeners? (defaults to true).
  * @returns {jsfc.XYDataset} This dataset (for chaining method calls).
  */
-jsfc.StandardXYDataset.prototype.clearSelection = function(selectionId, notify) {
+jsfc.StandardXYDataset.prototype.clearSelection = function(selectionId, 
+        notify) {
     var selectionIndex = this._indexOfSelection(selectionId);
     if (selectionIndex >= 0) {
         this.selections.splice(selectionIndex, 1);

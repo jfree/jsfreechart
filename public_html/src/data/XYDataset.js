@@ -207,6 +207,48 @@ jsfc.XYDataset.prototype.ybounds = function() {
 };
 
 /**
+ * Returns the keys for the properties defined for a series.
+ * 
+ * @param {!string} seriesKey  the series key.
+ * @returns {Array} The property keys.
+ */
+jsfc.XYDataset.prototype.getSeriesPropertyKeys = function() {
+};
+
+/**
+ * Returns the value of a property for a series.
+ * 
+ * @param {!string} seriesKey  the series key.
+ * @param {!string} propertyKey  the property key.
+ * @returns {*} The property value.
+ */
+jsfc.StandardXYDataset.prototype.getSeriesProperty = function(seriesKey, 
+        propertyKey) {
+};
+
+/**
+ * Sets a series property and sends a change event to all registered listeners.
+ * @param {!string} seriesKey  the series key.
+ * @param {!strnig} propertyKey  the property key.
+ * @param {*} value  the property value.
+ * @param {boolean} [notify] notify listeners (defaults to true).
+ * @returns {undefined}
+ */
+jsfc.StandardXYDataset.prototype.setSeriesProperty = function(seriesKey, 
+        propertyKey, value, notify) {
+};
+
+/**
+ * Clears all the series-level properties for the specified series.
+ * 
+ * @param {!string} seriesKey  the series key.
+ * @returns {undefined}
+ */
+jsfc.StandardXYDataset.prototype.clearSeriesProperties = function(seriesKey, 
+        notify) {
+};
+    
+/**
  * Returns a property for the specified data item.
  * 
  * @param {!string} seriesKey  the series key.

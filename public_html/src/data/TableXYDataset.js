@@ -310,6 +310,55 @@ jsfc.TableXYDataset.prototype.ybounds = function() {
 };
 
 /**
+ * Returns the keys for the properties defined for a series.
+ * 
+ * @param {!string} seriesKey  the series key.
+ * @returns {Array} The property keys.
+ */
+jsfc.TableXYDataset.prototype.getSeriesPropertyKeys = function(seriesKey) {
+    return this._source.getColumnPropertyKeys(seriesKey);
+};
+
+/**
+ * Returns the value of a property for a series.
+ * 
+ * @param {!string} seriesKey  the series key.
+ * @param {!string} propertyKey  the property key.
+ * @returns {*} The property value.
+ */
+jsfc.TableXYDataset.prototype.getSeriesProperty = function(seriesKey, 
+        propertyKey) {
+    return this._source.getColumnProperty(seriesKey, propertyKey);
+};
+
+/**
+ * Sets a series property and sends a change event to all registered listeners.
+ * @param {!string} seriesKey  the series key.
+ * @param {!strnig} propertyKey  the property key.
+ * @param {*} value  the property value.
+ * @param {boolean} [notify] notify listeners (defaults to true).
+ * @returns {undefined}
+ */
+jsfc.TableXYDataset.prototype.setSeriesProperty = function(seriesKey, 
+        propertyKey, value, notify) {
+    this._source.setColumnProperty(seriesKey, propertyKey, value);
+    if (notify !== false) {
+        this.notifyListeners();
+    }
+};
+
+/**
+ * Clears all the series-level properties for the specified series.
+ * 
+ * @param {!string} seriesKey  the series key.
+ * @returns {undefined}
+ */
+jsfc.TableXYDataset.prototype.clearSeriesProperties = function(seriesKey, 
+        notify) {
+    this._source.clearColumnProperties();
+};
+
+/**
  * Returns a property for the specified data item.
  * 
  * @param {!string} seriesKey  the series key.
