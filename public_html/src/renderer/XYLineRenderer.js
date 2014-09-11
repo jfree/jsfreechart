@@ -81,7 +81,7 @@ jsfc.XYLineRenderer.prototype.drawSeries = function(ctx, dataArea, plot,
             ctx.lineTo(xx, yy);
         }
     }
-    ctx.setLineColor(this._lineColorSource.getColor(seriesIndex, 0));
+    ctx.setLineColor(this.lookupLineColor(dataset, seriesIndex, i));
     ctx.setLineStroke(this._strokeSource.getStroke(seriesIndex, 0));
     ctx.stroke();
 };
@@ -126,7 +126,7 @@ jsfc.XYLineRenderer.prototype.drawItem = function(ctx, dataArea, plot,
             var yy0 = plot.getYAxis().valueToCoordinate(y0, dataArea.y() 
                     + dataArea.height(), dataArea.y());
             // connect with a line
-            ctx.setLineColor(this._lineColorSource.getColor(seriesIndex, 
+            ctx.setLineColor(this.lookupLineColor(dataset, seriesIndex, 
                     itemIndex));
             ctx.setLineStroke(this._strokeSource.getStroke(seriesIndex, 
                     itemIndex));
