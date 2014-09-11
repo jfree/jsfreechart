@@ -327,7 +327,11 @@ jsfc.KeyedValues2DDataset.prototype.setProperty = function(key, value, notify) {
     if (!this.properties.dataset) {
         this.properties.dataset = new jsfc.Map();
     }
-    this.properties.dataset.put(key, value);
+    if (value !== null) {
+        this.properties.dataset.put(key, value);
+    } else {
+        this.properties.dataset.remove(key);
+    }
     if (notify !== false) {
         this.notifyListeners();
     }
