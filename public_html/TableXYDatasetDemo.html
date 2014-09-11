@@ -105,6 +105,9 @@
                 source.add("R3", "Y1", 7.0);
                 source.add("R3", "Y2", 4.0);
                 source.add("R3", "Y3", 9.0);
+                
+                source.setColumnProperty("Y1", "color", "#FF0000")
+                source.setColumnProperty("Y3", "color", "#00FF00")
               
                 // wrap the source data to provide an XYDataset with 2 series
                 // using x-values from column "X" and y-values from "Y1" 
