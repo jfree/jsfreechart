@@ -446,7 +446,6 @@ jsfc.TableXYDataset.prototype.setItemProperty = function(seriesKey,
  */
 jsfc.TableXYDataset.prototype.select = function(selectionId, seriesKey, itemKey, 
         notify) {
-    // the itemKey maps to rows, and the seriesKeys are columnKeys from 1..N.
     this._source.select(selectionId, itemKey, seriesKey);
     if (notify !== false) {
         this.notifyListeners();
@@ -466,7 +465,6 @@ jsfc.TableXYDataset.prototype.select = function(selectionId, seriesKey, itemKey,
  */
 jsfc.TableXYDataset.prototype.unselect = function(selectionId, seriesKey, 
         itemKey, notify) {
-    // the itemKey maps to rows, and the seriesKeys are columnKeys from 1..N.
     this._source.select(selectionId, itemKey, seriesKey);
     if (notify !== false) {
         this.notifyListeners();
