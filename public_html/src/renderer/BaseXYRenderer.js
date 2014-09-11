@@ -70,6 +70,28 @@ jsfc.BaseXYRenderer.prototype.setLineColorSource = function(cs, notify) {
 };
 
 /**
+ * Returns a color to be used to draw lines for the specified data item.  The
+ * method will first check if there is a series property in the dataset with
+ * the key 'color'.  If it is present, it will be used as the line color, if
+ * not the lineColorSource will be used.
+ * 
+ * @param {jsfc.XYDataset} dataset  the dataset.
+ * @param {number} series  the series index.
+ * @param {number} item  the item index.
+ * @returns {jsfc.Color}
+ */
+jsfc.BaseXYRenderer.prototype.lookupLineColor = function(dataset, series, 
+        item) {
+    var seriesKey = dataset.seriesKey(series);
+    var colorStr = dataset.getSeriesProperty(seriesKey, "color");
+    if (colorStr) {
+        return jsfc.Color.fromStr(colorStr);
+    } else {
+        return this._lineColorSource.getColor(series, item);
+    }
+};
+
+/**
  * Returns the color source that provides fill colors.
  * 
  * @returns {jsfc.ColorSource}
