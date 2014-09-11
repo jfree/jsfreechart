@@ -620,7 +620,7 @@ jsfc.SVGContext2D.prototype.textDim = function(text) {
     	//IE bug, try to get dimensions differently
     	var h = svgText.scrollHeight;
     	if (h == 0) {
-    		h = this.font.size;
+            h = this._font.size;
     	}
     	dim = new jsfc.Dimension(svgText.scrollWidth, h);
     }
