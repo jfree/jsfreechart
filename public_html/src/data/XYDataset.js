@@ -255,10 +255,12 @@ jsfc.XYDataset.prototype.select = function(selectionId, seriesKey, itemKey,
  * @param {!string} selectionId  the ID for the set of selected items.
  * @param {!string} seriesKey  the series key.
  * @param {!Object} itemKey  the item key.
+ * @param {boolean} [notify]  notify listeners? (defaults to true).
  * 
  * @returns {jsfc.XYDataset} This dataset (for chaining method calls).
  */
-jsfc.XYDataset.prototype.unselect = function(selectionId, seriesKey, itemKey) {
+jsfc.XYDataset.prototype.unselect = function(selectionId, seriesKey, itemKey,
+        notify) {
 };
 
 /**
@@ -279,7 +281,8 @@ jsfc.XYDataset.prototype.isSelected = function(selectionId, seriesKey,
  * Clears any items from the selection with the specified id.
  * 
  * @param {string} selectionId  the selection it.
+ * @param {boolean} [notify]  notify listeners? (defaults to true).
  * @returns {jsfc.XYDataset} This dataset (for chaining method calls).
  */
-jsfc.XYDataset.prototype.clearSelection = function(selectionId) {
+jsfc.XYDataset.prototype.clearSelection = function(selectionId, notify) {
 };
