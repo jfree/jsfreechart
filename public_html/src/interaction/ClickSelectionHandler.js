@@ -32,7 +32,6 @@ jsfc.ClickSelectionHandler = function(manager, modifier) {
         throw new Error("Use 'new' for constructor.");
     }
     jsfc.BaseMouseHandler.init(manager, modifier, this);
-    this._extendModifier = new jsfc.Modifier(false, false, false, true);
     this._startPoint = null;
 };
 
@@ -65,7 +64,7 @@ jsfc.ClickSelectionHandler.prototype.mouseDown = function(e) {
  * @returns {undefined}
  */
 jsfc.ClickSelectionHandler.prototype.mouseUp = function(e) {
-    if (this._startPoint == null) {
+    if (this._startPoint === null) {
         return;
     }
     var element = this._manager.getElement();
@@ -77,14 +76,14 @@ jsfc.ClickSelectionHandler.prototype.mouseUp = function(e) {
         var dataset = this._manager.getChart().getPlot().getDataset();
         var t = e.target;
         if (t) {
-            var ref = t.getAttribute("jfree:ref");
+            var ref = t.getAttributeNS(jsfc.JSFreeChart.NS, "ref");
             if (ref) {
                 var refObj = JSON.parse(ref);
                 var seriesKey = refObj[0];
                 var itemKey = refObj[1];
                 var selected = dataset.isSelected("selection", seriesKey, 
                         itemKey);
-                if (!this._extendModifier.matchEvent(e)) {
+                if (!this._modifier.matchEventWithExtension(e)) {
                     dataset.clearSelection("selection");
                 }
                 if (selected) {
@@ -93,7 +92,7 @@ jsfc.ClickSelectionHandler.prototype.mouseUp = function(e) {
                     dataset.select("selection", seriesKey, itemKey);
                 }
             } else {
-                if (!this._extendModifier.matchEvent(e)) {
+                if (!this._modifier.matchEventWithExtension(e)) {
                     dataset.clearSelection("selection");
                 }           
             }
