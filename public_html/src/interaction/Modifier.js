@@ -36,7 +36,7 @@
  * 
  * @returns {undefined}
  */
-jsfc.Modifier = function(altKey, ctrlKey, metaKey, shiftKey, shiftExtends) {
+jsfc.Modifier = function(altKey, ctrlKey, metaKey, shiftKey) {
     if (!(this instanceof jsfc.Modifier)) {
         throw new Error("Use 'new' for constructor.");
     }
@@ -45,19 +45,38 @@ jsfc.Modifier = function(altKey, ctrlKey, metaKey, shiftKey, shiftExtends) {
     this.metaKey = metaKey || false;
     this.shiftKey = shiftKey || false;
     
-    // some mouse interactions use the SHIFT key to extend an operation 
-    // (typically a selection).  In this case, we want the modifier to match
-    // the event with or without the SHIFT key pressed.  By setting this flag
-    // to true, the match() method will know to accept either state for the
-    // SHIFT key.  (Note that it doesn't make sense to have both 'shiftKey' and
-    // 'shiftExtends' set to true).
-    this.shiftExtends = shiftExtends || false;
+    // this controls whether the modifier recognises an 'extension' operation,
+    // which by default we define using the SHIFT key
+    this.extension = null;
+};
+
+/**
+ * Creates and returns a new Modifier according to the platform (on MacOS the 
+ * Command key will be used, on Windows, Linux and other platforms the CTRL 
+ * key will be used).
+ * 
+ * @param {!boolean} altKey
+ * @param {!boolean} ctrlKey
+ * @param {!boolean} shiftKey
+ * @returns {jsfc.Modifier} The modifier.
+ */
+jsfc.Modifier.createModifier = function(altKey, ctrlKey, shiftKey, shiftExtends) {
+    var m;
+    if (jsfc.Utils.isMacOS()) {
+        m = new jsfc.Modifier(altKey, false, ctrlKey, shiftKey);
+    } else {
+        m = new jsfc.Modifier(altKey, ctrlKey, false, shiftKey);
+    }
+    if (shiftExtends) {
+        m.extension = new jsfc.Modifier(false, false, false, true);
+    }
+    return m;
 };
 
 /**
  * Returns true if the modifier matches the specified combination of keys,
- * and false otherwise.  Note that the 'shiftExtends' flag can be used to 
- * modify the matching logic.
+ * and false otherwise.  Note that if an extension modifier is defined, a 
+ * match can occur with or without the extension.
  * 
  * @param {!boolean} alt  the ALT key is pressed.
  * @param {!boolean} ctrl  the CTRL key is pressed.
@@ -67,11 +86,12 @@ jsfc.Modifier = function(altKey, ctrlKey, metaKey, shiftKey, shiftExtends) {
  */
 jsfc.Modifier.prototype.match = function(alt, ctrl, meta, shift) {
     var b = this.altKey === alt && this.ctrlKey === ctrl 
-            && this.metaKey === meta;
-    if (!this.shiftExtends || this.shiftKey) {
-        b = b && this.shiftKey === shift;    
+            && this.metaKey === meta && this.shiftKey === shift;
+    if (b) {
+        return true;
+    } else {
+        return this.matchWithExtension(alt, ctrl, meta, shift);
     }
-    return b;
 };
 
 /**
@@ -83,6 +103,21 @@ jsfc.Modifier.prototype.match = function(alt, ctrl, meta, shift) {
  */
 jsfc.Modifier.prototype.matchEvent = function(e) {
     return this.match(e.altKey, e.ctrlKey, e.metaKey, e.shiftKey);
+};
+
+jsfc.Modifier.prototype.matchWithExtension = function(alt, ctrl, meta, shift) {
+    if (this.extension === null) {
+        return false;
+    }
+    var b = alt === (this.altKey || this.extension.altKey) 
+            && ctrl === (this.ctrlKey || this.extension.ctrlKey) 
+            && meta === (this.metaKey || this.extension.metaKey)
+            && shift === (this.shiftKey || this.extension.shiftKey);
+    return b;
+};
+
+jsfc.Modifier.prototype.matchEventWithExtension = function(e) {
+    return this.matchWithExtension(e.altKey, e.ctrlKey, e.metaKey, e.shiftKey);
 };
 
 /**

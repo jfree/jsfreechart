@@ -55,6 +55,7 @@
         <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PolygonSelectionHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/RectangleSelectionHandler.js"></script>
         <script type="text/javascript" src="src/interaction/WheelHandler.js"></script>
         <script type="text/javascript" src="src/interaction/XYCrosshairHandler.js"></script>
         <script type="text/javascript" src="src/interaction/ZoomHandler.js"></script>
@@ -138,11 +139,22 @@
                 var manager = new jsfc.ChartManager(svg, chart);
                 document.chartManager = manager;
                 
-                // add a mouse handler to draw crosshairs
-                //var crosshairHandler = new jsfc.CrosshairHandler(manager);
-                //document.chartManager.addAuxiliaryHandler(crosshairHandler);
-                var modifiers = new jsfc.Modifier(false, false, true, false);
-                var selectHandler = new jsfc.PolygonSelectionHandler(manager, modifiers);
+                // add a mouse handler for rectangle selection when the 
+                // CTRL/META key is pressed, with SHIFT to extend the 
+                // existing selection
+                var mod = jsfc.Modifier.createModifier(false, true, false, 
+                        true);
+                var rectSelect = new jsfc.RectangleSelectionHandler(manager,
+                        mod);
+                manager.addLiveHandler(rectSelect);
+              
+                // add a mouse handler for polygon selection when the ALT and
+                // CTRL/META key is pressed, with SHIFT to extend the 
+                // existing selection
+                var modifiers = jsfc.Modifier.createModifier(true, true, false, 
+                        true);
+                var selectHandler = new jsfc.PolygonSelectionHandler(manager, 
+                        modifiers);
                 manager.addLiveHandler(selectHandler);
                 document.chartManager.refreshDisplay();                
             };

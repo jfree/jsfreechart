@@ -37,8 +37,8 @@
  * @class A chart manager handles user interaction with a chart that is 
  *     rendered in the browser.
  */
-jsfc.ChartManager = function(element, chart, dragZoomEnabled, wheelZoomEnabled, 
-        panEnabled) {
+jsfc.ChartManager = function(element, chart, dragZoomEnabled, 
+        wheelZoomEnabled, panEnabled) {
     if (!(this instanceof jsfc.ChartManager)) {
         throw new Error("Use 'new' for constructor.");
     }

@@ -30,7 +30,6 @@ jsfc.PolygonSelectionHandler = function(manager, modifier) {
         throw new Error("Use 'new' for constructor.");
     }
     jsfc.BaseMouseHandler.init(manager, modifier, this);
-    this._extendModifier = new jsfc.Modifier(false, false, false, true);
     this._polygon = null;
     this._fillColor = new jsfc.Color(255, 255, 100, 100);
     this._lineStroke = new jsfc.Stroke(0.5);
@@ -108,7 +107,7 @@ jsfc.PolygonSelectionHandler.prototype.mouseUp = function(e) {
     var dataset = plot.getDataset();
 
     // if this is not extending a selection, then clear the existing selection
-    if (!this._extendModifier.matchEvent(e)) {
+    if (!this._modifier.matchEventWithExtension(e)) {
         dataset.clearSelection("selection");
     }
     
