@@ -22,4 +22,4 @@
  */
 var jsfc = {};
 
-jsfc.JSFreeChart = { version: "0.5" };
+jsfc.JSFreeChart = { version: "0.5", NS: "http://www.jfree.org/jsfreechart" };
