@@ -70,3 +70,12 @@ jsfc.Utils.findItemInArray = function(item, arr) {
     });
 };
 
+/**
+ * Returns true if running on MacOS and false otherwise.
+ * 
+ * @returns {boolean} A boolean.
+ */
+jsfc.Utils.isMacOS = function() {
+    return navigator.appVersion.indexOf("Mac") !== -1;
+};
+
