@@ -369,7 +369,7 @@ jsfc.SVGContext2D.prototype.drawCircle = function(cx, cy, r) {
     t.setAttribute("r", r);
     var ref = this.getHint("ref");
     if (ref) {
-        t.setAttributeNS("http://www.jfree.org", "ref", JSON.stringify(ref));
+        t.setAttributeNS(jsfc.JSFreeChart.NS, "ref", JSON.stringify(ref));
         this.setHint("ref", null);
     }
     this.append(t);        
