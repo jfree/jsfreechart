@@ -52,6 +52,7 @@
         <script type="text/javascript" src="src/interaction/Modifier.js"></script>
         <script type="text/javascript" src="src/interaction/BaseMouseHandler.js"></script>
         <script type="text/javascript" src="src/interaction/ClickSelectionHandler.js"></script>
+        <script type="text/javascript" src="src/interaction/DualHandler.js"></script>
         <script type="text/javascript" src="src/interaction/LogEventHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PanHandler.js"></script>
         <script type="text/javascript" src="src/interaction/PolygonSelectionHandler.js"></script>
@@ -136,9 +137,20 @@
                         titleAnchor);
                 chart.setSize(600, 400);
                 var svg = document.getElementById("chart_svg");
-                var manager = new jsfc.ChartManager(svg, chart);
+                var manager = new jsfc.ChartManager(svg, chart, false, false, false);
                 document.chartManager = manager;
                 
+                // add a mouse handler for click selection, with SHIFT to 
+                // extend the existing selection
+                var mod = jsfc.Modifier.createModifier(false, false, false, 
+                        true);
+                var clickSelect = new jsfc.ClickSelectionHandler(manager,
+                        mod);
+                        
+                var dragZoom = new jsfc.ZoomHandler(manager, mod);
+                var dualHandler = new jsfc.DualHandler(manager, mod, clickSelect, dragZoom);
+                manager.addLiveHandler(dualHandler);
+               
                 // add a mouse handler for rectangle selection when the 
                 // CTRL/META key is pressed, with SHIFT to extend the 
                 // existing selection
@@ -156,6 +168,9 @@
                 var selectHandler = new jsfc.PolygonSelectionHandler(manager, 
                         modifiers);
                 manager.addLiveHandler(selectHandler);
+                
+                manager.addAuxiliaryHandler(new jsfc.WheelHandler(manager, 
+                        new jsfc.Modifier()));
                 document.chartManager.refreshDisplay();                
             };
             
