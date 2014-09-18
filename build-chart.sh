@@ -50,6 +50,7 @@ java -jar ~/jars/compiler.jar --warning_level VERBOSE --compilation_level SIMPLE
 --js public_html/src/data/IntervalXYDataset.js \
 --js public_html/src/data/XYDatasetUtils.js \
 --js public_html/src/data/StandardXYDataset.js \
+--js public_html/src/data/TableXYDataset.js \
 --js public_html/src/data/DatasetUtils.js \
 --js public_html/src/data/HistogramDataset.js \
 --js public_html/src/data/KeyedValuesDataset.js \
