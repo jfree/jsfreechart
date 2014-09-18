@@ -17,8 +17,7 @@ Overview
 
 Contributions
 -------------
-External contributions are welcome, but contributors will be required to assign
-copyright.
+External contributions are welcome, but contributors will be required to sign a contributor agreement that includes an assignment of copyright.
 
 More Information
 ----------------
