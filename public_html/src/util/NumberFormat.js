@@ -53,9 +53,15 @@ jsfc.NumberFormat.prototype.format = function(n) {
     } else {
         str = n.toFixed(this._dp); 
     }
-    // http://blog.tompawlak.org/number-currency-formatting-javascript
-    if (this.separator) {
-        str = str.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1" + this.separator);
+    var i = str.indexOf(".");
+    if (i >= 0) {
+        var pre = str.slice(0, i);
+        var post = str.slice(i);
+        // http://blog.tompawlak.org/number-currency-formatting-javascript
+        if (this.separator) {
+            pre = pre.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1" + this.separator);
+        }
+        str = pre + post;
     }
     return str;
 };
