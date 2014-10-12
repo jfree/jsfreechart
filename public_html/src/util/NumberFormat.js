@@ -16,7 +16,8 @@
  */
 
 /**
- * Creates a new number formatter.
+ * Creates a new number formatter.  By default, a comma is used for the
+ * decimal separator.
  * 
  * @constructor
  * @implements {jsfc.Format}
@@ -30,6 +31,7 @@ jsfc.NumberFormat = function(dp, exponential) {
         throw new Error("Use 'new' for construction.");
     }    
     this._dp = dp;
+    this.separator = ",";
     this._exponential = exponential || false;
 };
 
@@ -45,8 +47,15 @@ jsfc.NumberFormat.prototype.format = function(n) {
     if (this._exponential) {
         return n.toExponential(this._dp);
     }
+    var str;
     if (this._dp === Number.POSITIVE_INFINITY) {
-        return n.toString();
+        str = n.toString();
+    } else {
+        str = n.toFixed(this._dp); 
     }
-    return n.toFixed(this._dp);  
+    // http://blog.tompawlak.org/number-currency-formatting-javascript
+    if (this.separator) {
+        str = str.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1" + this.separator);
+    }
+    return str;
 };
