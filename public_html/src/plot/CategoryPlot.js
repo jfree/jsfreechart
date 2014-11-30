@@ -328,7 +328,7 @@ jsfc.CategoryPlot.prototype.getXAxisPosition = function() {
  * @returns {undefined}
  */
 jsfc.CategoryPlot.prototype.setXAxisPosition = function(edge, notify) {
-    this.xAxisPosition = edge;
+    this._xAxisPosition = edge;
     if (notify !== false) {
         this.notifyListeners();
     }
@@ -380,7 +380,7 @@ jsfc.CategoryPlot.prototype.getYAxisPosition = function() {
  * @returns {undefined}
  */
 jsfc.CategoryPlot.prototype.setYAxisPosition = function(edge, notify) {
-    this.yAxisPosition = edge;
+    this._yAxisPosition = edge;
     if (notify !== false) {
         this.notifyListeners();
     }
@@ -498,15 +498,16 @@ jsfc.CategoryPlot.prototype.draw = function(ctx, bounds, plotArea) {
 
     // compute the data area by getting the space required for the axes
     var space = new jsfc.AxisSpace(0, 0, 0, 0);
-    var edge = this.axisPosition(this._xAxis);
-    var xspace = this._xAxis.reserveSpace(ctx, this, bounds, plotArea, edge);
-    space.extend(xspace, edge);
-    
-    var adjArea = space.innerRect(plotArea);
-    edge = this.axisPosition(this._yAxis);
-    var yspace = this._yAxis.reserveSpace(ctx, this, bounds, adjArea, edge);
+    var edge = this.axisPosition(this._yAxis);
+    var yspace = this._yAxis.reserveSpace(ctx, this, bounds, plotArea, edge);
     space.extend(yspace, edge);
     
+    var adjArea = space.innerRect(plotArea);
+    
+    edge = this.axisPosition(this._xAxis);
+    var xspace = this._xAxis.reserveSpace(ctx, this, bounds, adjArea, edge);
+    space.extend(xspace, edge);
+
     this._dataArea = space.innerRect(plotArea);
     if (this._dataBackground) {
         this._dataBackground.paint(ctx, this._dataArea);
