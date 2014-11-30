@@ -835,7 +835,7 @@ jsfc.XYPlot.prototype.legendInfo = function() {
     this._dataset.seriesKeys().forEach(function(key) {
         var dataset = plot._dataset;
         var index = dataset.seriesIndex(key);
-        var color = plot._renderer.getLineColorSource().getLegendColor(index);
+        var color = plot._renderer.lookupLineColor(dataset, index, 0);
         var item = new jsfc.LegendItemInfo(key, color);
         item.label = key;
         info.push(item);
