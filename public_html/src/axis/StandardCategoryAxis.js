@@ -16,7 +16,7 @@
  */
 
 /**
- * Creates a new axis.
+ * Creates a new category axis.
  * Note that all properties having names beginning with an underscore should
  * be treated as private.  Updating these properties directly is strongly
  * discouraged.  Look for accessor methods instead.
@@ -39,6 +39,12 @@ jsfc.StandardCategoryAxis = function(label) {
     this._tickLabelColor = new jsfc.Color(100, 100, 100);
     this._tickLabelFactor = 1.4;
     this._tickLabelOrientation = null;
+    
+    // when there are many labels they can overlap ... if maxLevels is set to
+    // a value greater than 1 then the labels will be offset (if required) on 
+    // different levels so there is more space for each label.  This only 
+    // applies when the label orientation is PARALLEL to the axis.
+    this._tickLabelMaxLevels = 3;
     
     this._tickMarkInnerLength = 2;
     this._tickMarkOuterLength = 2;
@@ -80,6 +86,32 @@ jsfc.StandardCategoryAxis.prototype.setLabel = function(label, notify) {
 };
 
 /**
+ * Returns the maximum number of levels for the tick labels on the axis.  The
+ * default value is 3.
+ * 
+ * @returns {number} The maximum tick label levels.
+ */
+jsfc.StandardCategoryAxis.prototype.getTickLabelMaxLevels = function() {
+    return this._tickLabelMaxLevels;  
+};
+
+/**
+ * Sets the maximum number of levels for the tick labels on the axis.  This 
+ * should be an integer that is greater than or equal to 1.
+ *   
+ * @param {!number} maxLevels  the new value.
+ * @param {boolean} [notify]  notify listeners?
+ * @returns {undefined}
+ */
+jsfc.StandardCategoryAxis.prototype.getTickLabelMaxLevels = function(maxLevels, 
+        notify) {
+    this._tickLabelMaxLevels = maxLevels;    
+    if (notify !== false) {
+        this.notifyListeners();
+    }
+};
+
+/**
  * Configures this axis so it is up-to-date with respect to being the x-axis
  * for the specified plot.
  * 
@@ -97,8 +129,10 @@ jsfc.StandardCategoryAxis.prototype.configureAsXAxis = function(plot) {
  * Returns the tick label orientation, which is either the value specified or
  * a default value derived from the edge.
  * 
- * @param {string} edge  the edge along which the axis is drawn.
- * @returns {number} The label orientation.
+ * @param {!string} edge  the edge along which the axis is drawn (valid values
+ *         are defined in jsfc.RectangleEdge).
+ * @returns {string} The label orientation (see jsfc.LabelOrientation for valid
+ *         values).
  */
 jsfc.StandardCategoryAxis.prototype._resolveTickLabelOrientation = function(edge) {
     var result = this._tickLabelOrientation;
@@ -117,21 +151,49 @@ jsfc.StandardCategoryAxis.prototype._resolveTickLabelOrientation = function(edge
 };
 
 /**
- * Returns a list of ticks for the axis.
+ * Returns a list of tick marks for the axis.
  * 
- * @param {jsfc.Context2D} ctx  the graphics context.
- * @param {jsfc.Rectangle} area  the data area.
- * @param {string} edge  the edge.
+ * @param {!jsfc.Context2D} ctx  the graphics context.
+ * @param {!jsfc.Rectangle} area  the data area.
+ * @param {!string} edge  the edge.
  * 
  * @returns {Array} An array of jsfc.TickMark instances.
  */
 jsfc.StandardCategoryAxis.prototype.ticks = function(ctx, area, edge) {
-    return this._categories.map(function(key) {
-        return new jsfc.TickMark(0, key + "");  // here we could run a label generator
+    return this._categories.map(function(key, i) {
+        return new jsfc.TickMark(i, key + "");  // here we could run a label generator
     });
 };
 
-jsfc.StandardCategoryAxis.prototype.reserveSpace = function(ctx, plot, bounds, area, edge) {
+/**
+ * Returns a subset of the specified array of tick marks including only those
+ * tickmarks for the specified level (assuming there are levelCount levels).
+ * 
+ * @param {!Array} ticks  the tick marks.
+ * @param {!number} level  the level.
+ * @param {!number} levelCount  the total number of levels.
+ * @returns {unresolved}
+ */
+jsfc.StandardCategoryAxis.prototype._ticksForLevel = function(ticks, level, levelCount) {
+    return ticks.filter(function(element, index){
+        return (index % levelCount === level); 
+    });
+};
+
+/**
+ * Returns the amount of space to reserve for this axis when drawing 
+ * it along the specified edge.
+ * 
+ * @param {!jsfc.Context2D} ctx  the drawing context.
+ * @param {!jsfc.CategoryPlot} plot  the plot.
+ * @param {!jsfc.Rectangle} bounds  the bounds within which the plot (including
+ *         axes) will be drawn.
+ * @param {!jsfc.Rectangle} area  the estimated data area.
+ * @param {!string} edge  the edge (see jsfc.RectangleEdge for valid values).
+ * @returns {Number} The amount of space.
+ */
+jsfc.StandardCategoryAxis.prototype.reserveSpace = function(ctx, plot, bounds, 
+        area, edge) {
     var space = 0; //this._tickMarkOuterLength;
     
     // if there is an axis label we need to include space for it 
@@ -151,10 +213,10 @@ jsfc.StandardCategoryAxis.prototype.reserveSpace = function(ctx, plot, bounds, a
     }
     
     // tick marks
-//    var tickSize = this._calcTickSize(ctx, area, edge);
     var ticks = this.ticks(ctx, area, edge);
     ctx.setFont(this._tickLabelFont);
     var orientation = this._resolveTickLabelOrientation(edge);
+    var levels = 1;
     if (orientation === jsfc.LabelOrientation.PERPENDICULAR) {
         var max = 0;
         ticks.forEach(function(t) {
@@ -162,14 +224,20 @@ jsfc.StandardCategoryAxis.prototype.reserveSpace = function(ctx, plot, bounds, a
         });
         space += max;
     } else if (orientation === jsfc.LabelOrientation.PARALLEL) {
-        // just add the height of one label, because they are all the same
+        // figure out how many 'levels' will be used to display the labels
+        if (this._tickLabelMaxLevels > 1) {
+            levels = this._calcRequiredLabelLevels(ctx, area, edge, ticks, 
+                    this._tickLabelMaxLevels);
+        }
+        // just add the height of one label, because they are all the same,
+        // multiplied by the number of levels
         var dim = ctx.textDim("123");
-        space += dim.height();
+        space += levels * dim.height();
     }
     if (jsfc.RectangleEdge.isTopOrBottom(edge)) {
-        space += this._tickLabelMargin.top() + this._tickLabelMargin.bottom();
+        space += levels * (this._tickLabelMargin.top() + this._tickLabelMargin.bottom());
     } else if (jsfc.RectangleEdge.isLeftOrRight(edge)) {
-        space += this._tickLabelMargin.left() + this._tickLabelMargin.right();
+        space += levels * (this._tickLabelMargin.left() + this._tickLabelMargin.right());
     } else {
         throw new Error("Unrecognised edge code: " + edge);
     }
@@ -177,16 +245,65 @@ jsfc.StandardCategoryAxis.prototype.reserveSpace = function(ctx, plot, bounds, a
 };
 
 /**
+ * Calculates the required number of levels to display the given ticks along
+ * an axis lying on the specified edge of the given data area.  This method
+ * assumes that the labels are drawn PARALLEL to the axis.
+ * 
+ * @param {!jsfc.Context2D} ctx  the drawing context.
+ * @param {type} dataArea  the data area.
+ * @param {type} edge  the edge.
+ * @param {type} ticks  the ticks
+ * @param {type} maxLevels  the maximum number of levels permitted.
+ * 
+ * @returns {number} Thenumber of levels that should be used to display the
+ *         tick labels.
+ */
+jsfc.StandardCategoryAxis.prototype._calcRequiredLabelLevels = function(ctx, 
+        dataArea, edge, ticks, maxLevels) {
+    for (var levels = 1; levels <= maxLevels; levels++) {
+        var overlap = false;
+        for (var i = 0; i < levels; i++) {
+            // get the ticks (to get the labels)
+            var ticksForLevel = this._ticksForLevel(ticks, i, levels);
+            var prevDim, prevRange;
+            for (var j = 0; j < ticksForLevel.length; j++) {
+                // compute the position and width of the label
+                var tickLabel = ticksForLevel[j].label;
+                var dim = ctx.textDim(tickLabel);
+                var range = this.keyToRange(tickLabel, dataArea.minX(), 
+                        dataArea.maxX());
+                if (j > 0) {
+                    if (prevRange.value(0.5) + prevDim.width() / 2 + this._tickLabelMargin.right() 
+                            > range.value(0.5) - dim.width() / 2 - this._tickLabelMargin.left()) {
+                        overlap = true;
+                    }
+                }
+                prevDim = dim;
+                prevRange = range;
+            }
+            if (!overlap) {
+                return levels;
+            }
+        }
+    }
+    return maxLevels;
+};
+
+/**
  * Draws the axis to the specified graphics context.
  * 
- * @param {!jsfc.Context2D} ctx
- * @param {!jsfc.CategoryPlot} plot
- * @param {!jsfc.Rectangle} bounds
- * @param {!jsfc.Rectangle} dataArea
- * @param {!number} offset
+ * @param {!jsfc.Context2D} ctx  the drawing context.
+ * @param {!jsfc.CategoryPlot} plot  the plot.
+ * @param {!jsfc.Rectangle} bounds  the bounds for drawing the plot (including 
+ *         axes).
+ * @param {!jsfc.Rectangle} dataArea  the area in which the data will be drawn 
+ *        (the axis lies along one edge of this area).
+ * @param {!number} offset  an offset from the edge of the data area.
+ * 
  * @returns {undefined}
  */
-jsfc.StandardCategoryAxis.prototype.draw = function(ctx, plot, bounds, dataArea, offset) {
+jsfc.StandardCategoryAxis.prototype.draw = function(ctx, plot, bounds, dataArea,
+        offset) {
     var edge = plot.axisPosition(this);
     var isLeft = edge === jsfc.RectangleEdge.LEFT;
     var isRight = edge === jsfc.RectangleEdge.RIGHT;
@@ -199,11 +316,15 @@ jsfc.StandardCategoryAxis.prototype.draw = function(ctx, plot, bounds, dataArea,
     var h = dataArea.height();
     var gap = offset + this._tickMarkOuterLength;
     if (isLeft || isRight) {
-        
+        // so far this is not supported (TODO)
     }
     else if (isTop || isBottom) {
         ctx.setFont(this._tickLabelFont);
         ctx.setFillColor(this._tickLabelColor);
+        var tlm = this._tickLabelMargin;
+        var levels = this._calcRequiredLabelLevels(ctx, dataArea, edge, ticks, 
+                this._tickLabelMaxLevels);
+        var levelHeight = ctx.textDim("123").height() + tlm.top() + tlm.bottom();
         if (isTop) {
             gap += this._tickLabelMargin.bottom();
         } else {
@@ -211,6 +332,7 @@ jsfc.StandardCategoryAxis.prototype.draw = function(ctx, plot, bounds, dataArea,
         }
         for (var i = 0; i < ticks.length; i++) {
             var tick = ticks[i];
+            var level = i % levels;
             var rx = this.keyToRange(tick.label, x, x + w);
             var xx = rx.value(0.5);
 //            if (this._gridLinesVisible) {
@@ -223,13 +345,13 @@ jsfc.StandardCategoryAxis.prototype.draw = function(ctx, plot, bounds, dataArea,
                 ctx.setLineColor(this._tickMarkColor);
                 if (isTop) {
                     ctx.drawLine(xx, y - offset - this._tickMarkOuterLength, xx, 
-                            y - offset + this._tickMarkInnerLength);                    
-                    ctx.drawAlignedString(tick.label, xx, y - gap, 
+                            y - offset + this._tickMarkInnerLength);
+                    ctx.drawAlignedString(tick.label, xx, y - gap - (levelHeight * level), 
                             jsfc.TextAnchor.BOTTOM_CENTER);
                 } else {
                     ctx.drawLine(xx, y + h + offset - this._tickMarkInnerLength, 
                             xx, y + h + offset + this._tickMarkOuterLength);
-                    ctx.drawAlignedString(tick.label, xx, y + h + gap, 
+                    ctx.drawAlignedString(tick.label, xx, y + h + gap + (levelHeight * level), 
                             jsfc.TextAnchor.TOP_CENTER);
                 }
             }
@@ -241,39 +363,24 @@ jsfc.StandardCategoryAxis.prototype.draw = function(ctx, plot, bounds, dataArea,
         } else {
             ctx.drawLine(x, y + h + offset, x + w, y + h + offset);
         }
-        // if the axis has a label, draw it
-        if (this._label) {
-            ctx.setFont(this._labelFont);
-            ctx.setFillColor(this._labelColor);
-            if (isTop) {
-                ctx.drawAlignedString(this._label, x + w / 2, 
-                        y - gap - this._tickLabelMargin.bottom() 
-                        - this._labelMargin.top() - this._tickLabelFont.size, 
-                        jsfc.TextAnchor.BOTTOM_CENTER);                
-            } else {
-                ctx.drawAlignedString(this._label, x + w / 2, 
-                        y + h + gap + this._tickLabelMargin.bottom() 
-                        + this._labelMargin.top() + this._tickLabelFont.size, 
-                        jsfc.TextAnchor.TOP_CENTER);
-            }
+    }
+
+    // if the axis has a label, draw it
+    if (this._label) {
+        ctx.setFont(this._labelFont);
+        ctx.setFillColor(this._labelColor);
+        if (isTop) {
+            ctx.drawAlignedString(this._label, x + w / 2, 
+                    y - gap - this._tickLabelMargin.bottom() 
+                    - this._labelMargin.top() - (levels * levelHeight), 
+                    jsfc.TextAnchor.BOTTOM_CENTER);                
+        } else {
+            ctx.drawAlignedString(this._label, x + w / 2, 
+                    y + h + gap + this._tickLabelMargin.bottom() 
+                    + this._labelMargin.top() + (levels * levelHeight), 
+                    jsfc.TextAnchor.TOP_CENTER);
         }
     }
-    // if the axis has a label, draw it
-        if (this._label) {
-            ctx.setFont(this._labelFont);
-            ctx.setFillColor(this._labelColor);
-            if (isTop) {
-                ctx.drawAlignedString(this._label, x + w / 2, 
-                        y - gap - this._tickLabelMargin.bottom() 
-                        - this._labelMargin.top() - this._tickLabelFont.size, 
-                        jsfc.TextAnchor.BOTTOM_CENTER);                
-            } else {
-                ctx.drawAlignedString(this._label, x + w / 2, 
-                        y + h + gap + this._tickLabelMargin.bottom() 
-                        + this._labelMargin.top() + this._tickLabelFont.size, 
-                        jsfc.TextAnchor.TOP_CENTER);
-            }
-        }
 };
 
 /**
@@ -297,7 +404,7 @@ jsfc.StandardCategoryAxis.prototype.coordinateToKey = function(coordinate, r0,
  * @param {!string} key  the column key.
  * @param {!number} r0  the starting screen coordinate.
  * @param {!number} r1  the ending screen coordinate.
- * @returns {undefined}
+ * @returns {jsfc.Range} The range.
  */
 jsfc.StandardCategoryAxis.prototype.keyToRange = function(key, r0, r1) {
     var c = jsfc.Utils.findItemInArray(key, this._categories);
