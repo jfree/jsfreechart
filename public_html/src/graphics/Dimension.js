@@ -55,3 +55,13 @@ jsfc.Dimension.prototype.width = function() {
 jsfc.Dimension.prototype.height = function() {
     return this._height;
 };
+
+/**
+ * Returns a string representation of this object, primarily for debugging 
+ * purposes.
+ * 
+ * @returns {String}
+ */
+jsfc.Dimension.prototype.toString = function() {
+    return "[Dimension(" + this._width + ", " + this._height + ")]";  
+};
