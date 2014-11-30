@@ -91,6 +91,12 @@ jsfc.Range.prototype.contains = function(n) {
     return n >= this._lowerBound && n <= this._upperBound;
 };
 
+/**
+ * Returns a string representation of this object, primarily for debugging 
+ * purposes.
+ * 
+ * @returns {String}
+ */
 jsfc.Range.prototype.toString = function() {
     return "[Range: " + this._lowerBound + ", " + this._upperBound + "]";
 };
